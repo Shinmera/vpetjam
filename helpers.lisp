@@ -120,7 +120,7 @@
 (define-shader-entity animated-sprite (trial:animated-sprite facing-entity sized-entity)
   ())
 
-(define-shader-entity game-entity (animated-sprite collider)
+(defclass game-entity (sized-entity collider)
   ((velocity :initarg :velocity :initform (vec2 0 0) :accessor velocity
              :type vec2 :documentation "The velocity of the entity.")
    (state :initform :normal :accessor state

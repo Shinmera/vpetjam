@@ -16,6 +16,7 @@
                (:file "camera")
                (:file "world")
                (:file "farm")
+               (:file "creature")
                (:file "player")
                (:file "cheats")
                (:file "main")

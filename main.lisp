@@ -55,19 +55,23 @@
     (call-next-method)))
 
 (defun launch (&rest initargs)
-  (let ((*package* #.*package*))
+  (let ((*package* #.*package*)
+        (context (getf initargs :context)))
+    (remf initargs :context)
     (load-keymap)
     (ignore-errors
      (load-settings))
     (save-settings)
     (apply #'trial:launch 'main
-           :context (list :width (first (setting :display :resolution))
-                          :height (second (setting :display :resolution))
-                          :vsync (setting :display :vsync)
-                          :fullscreen (setting :display :fullscreen)
-                          :title +app-system+
-                          :version '(3 3)
-                          :profile :core)
+           :context (append
+                     context
+                     (list :width (first (setting :display :resolution))
+                           :height (second (setting :display :resolution))
+                           :vsync (setting :display :vsync)
+                           :fullscreen (setting :display :fullscreen)
+                           :title +app-system+
+                           :version '(3 3)
+                           :profile :core))
            (append (setting :debugging :initargs) initargs))))
 
 (defmethod setup-scene ((main main) (scene scene))

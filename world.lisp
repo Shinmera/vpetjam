@@ -47,3 +47,30 @@
     #-vpetjam-release
     (enter (make-instance 'trial::fps-counter) (scene main)))
   #!(issue +world+ 'reload-scene))
+
+(defun queue-sort (queue comparator)
+  (let ((elements (make-array (flare-queue:queue-size queue))))
+    (loop for cell = (flare-queue:right (flare-queue::head queue)) then (flare-queue:right cell)
+          for i from 0
+          until (eq cell (flare-queue::tail queue))
+          do (setf (aref elements i) cell))
+    (sort elements (lambda (a b)
+                     (funcall comparator (flare-queue:value a) (flare-queue:value b))))
+    (loop for left = (flare-queue::head queue) then right
+          for right across elements
+          do (flare-queue:cell-tie left right))
+    (flare-queue:cell-tie (aref elements (1- (length elements)))
+                          (flare-queue::tail queue))))
+
+(defmethod process :after ((world world))
+  (queue-sort (objects world)
+              (lambda (a b)
+                (cond ((and (typep a 'game-entity) (typep b 'game-entity))
+                       (< (vy (location b)) (vy (location a))))
+                      ((typep a 'game-entity)
+                       a)
+                      ((typep b 'game-entity)
+                       T)
+                      (T
+                       T))))
+  (compile-to-pass world world))

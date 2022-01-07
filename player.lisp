@@ -1,8 +1,11 @@
 (in-package #:org.shirakumo.fraf.vpetjam)
 
-(define-shader-entity player (game-entity)
+(define-shader-entity player (animated-sprite game-entity)
   ((name :initform 'player))
   (:default-initargs :sprite-data (asset 'vpetjam 'player)))
+
+(defmethod apply-transforms progn ((player player))
+  (scale-by 0.75 0.75 1))
 
 (defmethod handle ((ev tick) (player player))
   (call-next-method)
@@ -55,3 +58,7 @@
            (setf (animation player) 'down-stand))
           (T
            (setf (animation player) 'side-stand)))))
+
+(defmethod handle ((ev mouse-press) (player player))
+  (when (eql :middle (button ev))
+    (enter-and-load (make-instance 'creature :location (mouse-world-pos (pos ev))) +world+ +main+)))
