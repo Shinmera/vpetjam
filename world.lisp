@@ -80,5 +80,3 @@
                        T))))
   (compile-to-pass world world))
 
-(print (mapcar (lambda (a) (when (typep a 'located-entity) (location a)))
-               (flare-queue:coerce-queue (objects +world+) 'list)))
