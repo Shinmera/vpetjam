@@ -15,6 +15,7 @@
                (:file "helpers")
                (:file "camera")
                (:file "world")
+               (:file "genetics")
                (:file "farm")
                (:file "creature")
                (:file "player")
