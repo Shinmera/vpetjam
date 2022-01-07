@@ -43,5 +43,7 @@
   (defmethod setup-scene ((main trial:main) (world world))
     (enter (make-instance 'farm) world)
     (enter (make-instance 'player) world)
-    (enter (make-instance 'camera) world))
+    (enter (make-instance 'camera) world)
+    #-vpetjam-release
+    (enter (make-instance 'trial::fps-counter) (scene main)))
   #!(issue +world+ 'reload-scene))
