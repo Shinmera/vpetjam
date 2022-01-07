@@ -34,11 +34,11 @@
 
 (defmethod (setf location) :after (loc (collider collider))
   (when (slot-boundp collider 'container)
-    (bvh:bvh-update (bvh (container collider)) collider)))
+    (bvh:bvh-update (bvh +world+) collider)))
 
 (defmethod (setf bsize) :after (loc (collider collider))
   (when (slot-boundp collider 'container)
-    (bvh:bvh-update (bvh (container collider)) collider)))
+    (bvh:bvh-update (bvh +world+) collider)))
 
 (defclass base-entity (entity)
   ((name :initarg :name :initform NIL :type symbol)))
@@ -54,10 +54,10 @@
   (translate-by (round (vx (location obj))) (round (vy (location obj))) 0))
 
 (defclass facing-entity (base-entity transformed)
-  ((direction :initarg :direction :initform 1 :accessor direction :type (member -1 +1))))
+  ((direction :initarg :direction :initform (vec 0 1) :accessor direction :type vec2)))
 
 (defmethod apply-transforms progn ((obj facing-entity))
-  (scale-by (direction obj) 1 1))
+  (scale-by (float-sign (vx (direction obj))) 1 1))
 
 (defclass rotated-entity (base-entity transformed)
   ((angle :initarg :angle :initform 0f0 :accessor angle :type single-float)))
@@ -131,7 +131,11 @@
   (vsetf (location entity) (vx location) (vy location)))
 
 (defmethod handle :after ((ev tick) (entity game-entity))
-  (let ((vel (frame-velocity entity)))
+  (let ((vel (frame-velocity entity))
+        (bsize (bsize (unit 'farm +world+))))
     (nv+ (location entity) vel)
     (vsetf vel 0 0)
-    (bvh:bvh-update (bvh (region +world+)) entity)))
+    ;; FIXME: this sucks.
+    (setf (vx (location entity)) (clamp (- 100 (vx bsize)) (vx (location entity)) (- (vx bsize) 100)))
+    (setf (vy (location entity)) (clamp (- 10 (vy bsize)) (vy (location entity)) (- (vy bsize) 200)))
+    (bvh:bvh-update (bvh +world+) entity)))

@@ -10,10 +10,13 @@
   :components ((:file "package")
                (:file "toolkit")
                (:file "actions")
+               (:file "sprite-data")
                (:file "assets")
                (:file "helpers")
                (:file "camera")
                (:file "world")
+               (:file "player")
+               (:file "cheats")
                (:file "main")
                (:module "ui"
                 :components ((:file "general"))))

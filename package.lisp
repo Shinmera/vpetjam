@@ -3,7 +3,7 @@
   (:use #:cl+trial)
   (:shadow #:main #:launch
            #:located-entity #:sized-entity #:animated-sprite
-           #:camera)
+           #:camera #:sprite-data)
   (:local-nicknames
    (#:alloy #:org.shirakumo.alloy)
    (#:trial-alloy #:org.shirakumo.fraf.trial.alloy)

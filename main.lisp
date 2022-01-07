@@ -71,7 +71,7 @@
            (append (setting :debugging :initargs) initargs))))
 
 (defmethod setup-scene ((main main) (scene scene))
-  (enter (make-instance 'camera) scene)
+  (call-next-method)
   (let ((render (make-instance 'render-pass))
         (ui (make-instance 'ui-pass :base-scale (setting :display :ui-scale)))
         (blend (make-instance 'blend-pass)))

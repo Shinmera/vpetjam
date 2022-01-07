@@ -14,7 +14,7 @@
 (define-assets-from-path (vpetjam sprite-data "sprite/*.lisp" :ignore-directory T))
 
 (define-assets-from-path (vpetjam image "texture/*.png" :ignore-directory T)
-  (T :min-filter :nearest :mag-filter :nearest))
+  (T :min-filter :linear-mipmap-linear :mag-filter :linear))
 
 (define-assets-from-path (sound trial-harmony:sound "**/*.wav")
   (T :volume 0.1))
