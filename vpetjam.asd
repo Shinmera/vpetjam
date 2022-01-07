@@ -15,6 +15,7 @@
                (:file "helpers")
                (:file "camera")
                (:file "world")
+               (:file "farm")
                (:file "player")
                (:file "cheats")
                (:file "main")
