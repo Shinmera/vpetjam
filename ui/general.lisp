@@ -12,7 +12,7 @@
                              (T T 0.5)))))
 
 (defmethod org.shirakumo.alloy.renderers.opengl.msdf:fontcache-directory ((ui ui))
-  (pool-path 'kandria "font-cache/"))
+  (pool-path 'vpetjam "font-cache/"))
 
 (define-shader-pass ui-pass (ui)
   ((name :initform 'ui-pass)
@@ -80,6 +80,7 @@
   (call-next-method)
   (dolist (panel (panels pass))
     (stage panel area))
+  #++
   (dolist (sound '(ui-focus-in ui-focus-out ui-location-enter
                    ui-advance-dialogue ui-no-more-to-focus
                    ui-quest-start ui-close-menu ui-dialogue-choice

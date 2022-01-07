@@ -1,4 +1,4 @@
 (in-package #:org.shirakumo.fraf.vpetjam)
 
-(defclass world (scene)
+(defclass world (pipelined-scene)
   ())

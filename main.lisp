@@ -3,7 +3,7 @@
 (deploy:remove-hook :deploy 'org.shirakumo.fraf.trial.alloy::alloy)
 
 (defclass main (org.shirakumo.fraf.trial.notify:main)
-  ((scene :initform NIL)
+  ((scene :initform (make-instance 'world))
    (loader :initform (make-instance 'loader))
    (game-speed :initform 1.0 :accessor game-speed))
   (:default-initargs
@@ -19,18 +19,13 @@
                                                       :mixers '(:music (:effect mixed:plane-mixer))
                                                       :effects '((mixed:biquad-filter :filter :lowpass :name :lowpass))
                                                       :drain drain))))
-    (handler-case (with-error-logging (:kandria "Failed to set up sound, falling back to dummy output.")
+    (handler-case (with-error-logging (:vpetjam "Failed to set up sound, falling back to dummy output.")
                     (start (or audio-backend (setting :audio :backend) :default)))
       (error () (start :dummy))))
-  (setf (mixed:min-distance harmony:*server*) (* +tile-size+ 5))
-  (setf (mixed:max-distance harmony:*server*) (* +tile-size+ (vx +tiles-in-view+)))
+  (setf (mixed:min-distance harmony:*server*) 64)
+  (setf (mixed:max-distance harmony:*server*) 1024)
   (loop for (k v) on (setting :audio :volume) by #'cddr
         do (setf (harmony:volume k) v)))
-
-(defmethod initialize-instance :after ((main main) &key region)
-  (when region
-    (load-region region T))
-  (setf (game-speed main) (setting :gameplay :game-speed)))
 
 (defmethod update ((main main) tt dt fc)
   (let* ((scene (scene main))
@@ -77,11 +72,12 @@
 
 (defmethod setup-scene ((main main) (scene scene))
   (enter (make-instance 'camera) scene)
-  (let ((rendering (make-instance 'render-pass))
+  (let ((render (make-instance 'render-pass))
         (ui (make-instance 'ui-pass :base-scale (setting :display :ui-scale)))
-        (blend (make-instance 'combine-pass)))
+        (blend (make-instance 'blend-pass)))
     (connect (port render 'color) (port blend 'trial::a-pass) scene)
-    (connect (port ui 'color) (port blend 'trial::b-pass) scene)))
+    (connect (port ui 'color) (port blend 'trial::b-pass) scene))
+  scene)
 
 (defmethod setup-rendering :after ((main main))
   (disable :cull-face :scissor-test :depth-test))

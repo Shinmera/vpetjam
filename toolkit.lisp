@@ -9,7 +9,6 @@
                          :backend :default
                          :volume (:master 0.5
                                   :effect 1.0
-                                  :speech 1.0
                                   :music 1.0))
                  :display (:resolution (1280 720)
                            :fullscreen NIL
@@ -18,6 +17,17 @@
                            :ui-scale 1.0
                            :font "PromptFont")
                  :language :eng)))
+
+(declaim (inline v<-))
+(defun v<- (target source)
+  (etypecase source
+    (vec2 (vsetf target (vx2 source) (vy2 source)))
+    (vec3 (vsetf target (vx3 source) (vy3 source) (vz3 source)))
+    (vec4 (vsetf target (vx4 source) (vy4 source) (vz4 source) (vw4 source)))))
+
+(defmacro tvec (&rest args)
+  `(vsetf (load-time-value (vec ,@(loop repeat (length args) collect 0)))
+          ,@args))
 
 (defmethod unit (thing (target (eql T)))
   (when +world+
