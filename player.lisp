@@ -58,7 +58,3 @@
            (setf (animation player) 'down-stand))
           (T
            (setf (animation player) 'side-stand)))))
-
-(defmethod handle ((ev mouse-press) (player player))
-  (when (eql :middle (button ev))
-    (enter-and-load (make-instance 'creature :location (mouse-world-pos (pos ev))) +world+ +main+)))

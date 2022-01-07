@@ -40,7 +40,8 @@
 
 (defun mouse-world-pos (pos)
   (let ((camera (unit :camera T)))
-    (let ((pos (nv+ (v/ pos (view-scale camera) (zoom camera)) (location camera))))
+    (let ((pos (nv+ (v/ pos (view-scale camera) (zoom camera))
+                    (vxy (location camera)))))
       (nv- pos (v/ (target-size camera) (zoom camera))))))
 
 (defun world-screen-pos (pos)

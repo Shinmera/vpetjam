@@ -43,16 +43,6 @@
 (defclass base-entity (entity)
   ((name :initarg :name :initform NIL :type symbol)))
 
-(defclass located-entity (base-entity transformed)
-  ((location :initarg :location :initform (vec 0 0) :accessor location :type vec2)))
-
-(defmethod print-object ((entity located-entity) stream)
-  (print-unreadable-object (entity stream :type T :identity T)
-    (format stream "~@[~a ~]~a" (name entity) (location entity))))
-
-(defmethod apply-transforms progn ((obj located-entity))
-  (translate-by (round (vx (location obj))) (round (vy (location obj))) 0))
-
 (defclass facing-entity (base-entity transformed)
   ((direction :initarg :direction :initform (vec 0 1) :accessor direction :type vec2)))
 
@@ -132,10 +122,13 @@
 
 (defmethod handle :after ((ev tick) (entity game-entity))
   (let ((vel (frame-velocity entity))
+        (loc (location entity))
         (bsize (bsize (unit 'farm +world+))))
-    (nv+ (location entity) vel)
+    (incf (vx loc) (vx vel))
+    (incf (vy loc) (vy vel))
     (vsetf vel 0 0)
     ;; FIXME: this sucks.
-    (setf (vx (location entity)) (clamp (- 100 (vx bsize)) (vx (location entity)) (- (vx bsize) 100)))
-    (setf (vy (location entity)) (clamp (- 10 (vy bsize)) (vy (location entity)) (- (vy bsize) 200)))
+    (setf (vx loc) (clamp (- 100 (vx bsize)) (vx loc) (- (vx bsize) 100)))
+    (setf (vy loc) (clamp (- 10 (vy bsize)) (vy loc) (- (vy bsize) 200)))
+    (setf (vz loc) (vy loc))
     (bvh:bvh-update (bvh +world+) entity)))

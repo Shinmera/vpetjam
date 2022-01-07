@@ -48,6 +48,10 @@
     (enter (make-instance 'trial::fps-counter) (scene main)))
   #!(issue +world+ 'reload-scene))
 
+(defmethod handle ((ev mouse-press) (world world))
+  (when (eql :middle (button ev))
+    (enter-and-load (make-instance 'crop :location (vxyy (mouse-world-pos (pos ev)))) world +main+)))
+
 (defun queue-sort (queue comparator)
   (let ((elements (make-array (flare-queue:queue-size queue))))
     (loop for cell = (flare-queue:right (flare-queue::head queue)) then (flare-queue:right cell)
@@ -63,14 +67,18 @@
                           (flare-queue::tail queue))))
 
 (defmethod process :after ((world world))
+  ;; z-sort. Really terribly inefficient.
   (queue-sort (objects world)
               (lambda (a b)
-                (cond ((and (typep a 'game-entity) (typep b 'game-entity))
-                       (< (vy (location b)) (vy (location a))))
-                      ((typep a 'game-entity)
-                       a)
-                      ((typep b 'game-entity)
+                (cond ((and (typep a 'located-entity) (typep b 'located-entity))
+                       (< (vz (location b)) (vz (location a))))
+                      ((typep a 'located-entity)
+                       NIL)
+                      ((typep b 'located-entity)
                        T)
                       (T
                        T))))
   (compile-to-pass world world))
+
+(print (mapcar (lambda (a) (when (typep a 'located-entity) (location a)))
+               (flare-queue:coerce-queue (objects +world+) 'list)))

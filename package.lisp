@@ -1,9 +1,7 @@
 (defpackage #:vpetjam
   (:nicknames #:org.shirakumo.fraf.vpetjam)
   (:use #:cl+trial)
-  (:shadow #:main #:launch
-           #:located-entity #:sized-entity #:animated-sprite
-           #:camera #:sprite-data)
+  (:shadow #:main #:launch #:sized-entity #:animated-sprite #:camera #:sprite-data)
   (:local-nicknames
    (#:alloy #:org.shirakumo.alloy)
    (#:trial-alloy #:org.shirakumo.fraf.trial.alloy)

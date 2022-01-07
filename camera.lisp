@@ -5,7 +5,7 @@
    (scale :initform 1.0 :accessor view-scale)
    (target-size :initarg :target-size :accessor target-size)
    (target :initarg :target :initform NIL :accessor target)
-   (intended-location :initform (vec2 0 0) :accessor intended-location)
+   (intended-location :initform (vec3 0 0 0) :accessor intended-location)
    (zoom :initarg :zoom :initform 1.0 :accessor zoom)
    (intended-zoom :initform 1.0 :accessor intended-zoom)
    (shake-timer :initform 0f0 :accessor shake-timer)
@@ -117,7 +117,8 @@
 
 (defmethod project-view ((camera camera))
   (let* ((z (max 0.0001 (* (view-scale camera) (zoom camera))))
-         (v (nv- (v/ (target-size camera) (zoom camera)) (location camera))))
+         (v (nv- (v/ (target-size camera) (zoom camera))
+                 (vxy (location camera)))))
     (reset-matrix *view-matrix*)
     (scale-by z z z *view-matrix*)
     (translate-by (vx v) (vy v) 100 *view-matrix*)))

@@ -6,7 +6,8 @@
 (define-shader-entity farm (vertex-entity textured-entity located-entity)
   ((name :initform 'farm)
    (vertex-array :initform (// 'vpetjam 'farm-mesh))
-   (texture :initform (// 'vpetjam 'farm))))
+   (texture :initform (// 'vpetjam 'farm))
+   (location :initform (vec 0 0 10000))))
 
 (defmethod bsize ((farm farm))
   (load-time-value (vec (/ 1920 2) (/ 1080 2))))
