@@ -12,6 +12,7 @@
                (:file "actions")
                (:file "assets")
                (:file "helpers")
+               (:file "camera")
                (:file "world")
                (:file "main")
                (:module "ui"
