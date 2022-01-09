@@ -71,6 +71,11 @@
 (defmethod duration ((clip clip))
   (aref (stops clip) (1- (length (stops clip)))))
 
+(defmethod mix ((a real) (b real) x)
+  (let ((a (float a 0f0))
+        (b (float b 0f0)))
+    (+ a (* (- b a) x))))
+
 (defmethod mix ((a float) (b float) x)
   (+ a (* (- b a) x)))
 
@@ -93,7 +98,8 @@
    (index :initform 0 :accessor index)
    (loop-p :initarg :loop :initform NIL :accessor loop-p)))
 
-(defgeneric update-field (target field value))
+(defgeneric field (field target))
+(defgeneric (setf field) (value field target))
 (defgeneric advance (playhead target dt))
 
 (defmethod handle :after ((ev tick) (playhead playhead))
@@ -104,6 +110,13 @@
         (index (index playhead))
         (clip (clip playhead)))
     (when clip
+      (when (<= clock 0.0)
+        (loop for i from 0 below (length (fields clip))
+              for field = (aref (fields clip) i)
+              for vals = (aref (vals clip) i)
+              do (setf (field field target) (mix (field field target) (aref vals 0) 0.3)))
+        (setf (clock playhead) clock)
+        (return-from advance))
       (when (<= (duration clip) clock)
         (cond ((loop-p playhead)
                (setf clock (mod clock (duration clip)))
@@ -117,7 +130,7 @@
       (cond ((= (aref (stops clip) index) clock)
              (loop for field across (fields clip)
                    for value across (aref (vals clip) index)
-                   do (update-field target field value)))
+                   do (setf (field field target) value)))
             (T
              (loop with x = (/ (- clock (aref (stops clip) index))
                                (- (aref (stops clip) (1+ index)) (aref (stops clip) index)))
@@ -126,12 +139,12 @@
                    for vals = (aref (vals clip) i)
                    for prev = (aref vals index)
                    for next = (aref vals (1+ index))
-                   do (update-field target field (mix prev next x)))))
+                   do (setf (field field target) (mix prev next x)))))
       (setf (clock playhead) clock)
       (setf (index playhead) index))))
 
 (defmethod reset ((playhead playhead))
-  (setf (clock playhead) 0.0)
+  (setf (clock playhead) -0.1)
   (setf (index playhead) 0)
   playhead)
 
@@ -163,9 +176,3 @@
   (setf (clip playhead) clip)
   (setf (loop-p playhead) T)
   (start playhead))
-
-(defclass dummy (playhead)
-  ())
-
-(defmethod update-field ((dummy dummy) field value)
-  (format T "~& ~16a: ~a" field value))

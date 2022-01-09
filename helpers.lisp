@@ -219,7 +219,7 @@ void main(){
             while child
             do (render-child child program)))))
 
-(defmethod (setf direction) :after (dir (entity part-parent))
+(defmethod (setf direction) (dir (entity part-parent))
   (let ((off (cond ((> 0 (vy dir)) 0)
                    ((= 0 (vy dir)) 1)
                    ((< 0 (vy dir)) 2))))

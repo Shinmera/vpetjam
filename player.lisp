@@ -90,13 +90,21 @@
   0.3 (((:larm angle) +3.3)
        ((:rarm angle) +3.1)))
 
-(defmethod update-field ((player player) field value)
+(defmethod (setf field) (value field (player player))
   (destructuring-bind (part func) field
     (let ((part (part part player)))
       (ecase func
         (location (setf (location part) value))
         (angle (setf (angle part) value))
         (skew (setf (skew part) value))))))
+
+(defmethod field (field (player player))
+  (destructuring-bind (part func) field
+    (let ((part (part part player)))
+      (ecase func
+        (location (location part))
+        (angle (angle part))
+        (skew (skew part))))))
 
 (defmethod (setf direction) :after (dir (player player))
   (setf (slot-value player 'direction) dir))
