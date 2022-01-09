@@ -50,7 +50,7 @@
 
 (defmethod handle ((ev mouse-press) (world world))
   (when (eql :middle (button ev))
-    (enter-and-load (make-instance 'crop :location (vxyy (mouse-world-pos (pos ev)))) world +main+)))
+    (enter-and-load (make-instance 'creature :location (vxyy (mouse-world-pos (pos ev)))) world +main+)))
 
 (defun queue-sort (queue comparator)
   (let ((elements (make-array (flare-queue:queue-size queue))))
