@@ -66,3 +66,7 @@
              `(when +world+
                 (with-eval-in-render-loop (+world+)
                   ,inner)))))
+
+(defun maybe-leave (thing)
+  (when (slot-boundp thing 'container)
+    (leave* thing T)))

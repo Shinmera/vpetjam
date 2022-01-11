@@ -13,6 +13,7 @@
                (:file "sprite-data")
                (:file "assets")
                (:file "helpers")
+               (:file "receptacle")
                (:file "animation")
                (:file "camera")
                (:file "world")

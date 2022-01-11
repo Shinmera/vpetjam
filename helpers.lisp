@@ -1,13 +1,16 @@
 (in-package #:org.shirakumo.fraf.vpetjam)
 
 (define-asset (vpetjam 1x) mesh
-    (make-rectangle 1 1 :align :bottomleft))
+    (make-rectangle 1 1))
 
 (define-asset (vpetjam 64x) mesh
     (make-rectangle 64 64))
 
 (define-asset (vpetjam 128x) mesh
     (make-rectangle 128 128))
+
+(define-asset (vpetjam 512x) mesh
+    (make-rectangle 512 512))
 
 (define-asset (vpetjam placeholder) image
     #p"placeholder.png")
@@ -52,6 +55,12 @@
 (defmethod resize ((entity sized-entity) width height)
   (vsetf (bsize entity) (/ width 2) (/ height 2)))
 
+(define-shader-entity basic-entity (vertex-entity textured-entity sized-entity)
+  ((vertex-array :initform (// 'vpetjam '1x))))
+
+(defmethod apply-transforms progn ((entity basic-entity))
+  (scale-by (* 2.0 (vx (bsize entity))) (* 2.0 (vy (bsize entity))) 1.0))
+
 (define-shader-entity animated-sprite (trial:animated-sprite facing-entity sized-entity)
   ())
 
@@ -90,17 +99,22 @@
 (defmethod render-child ((part part) (program shader-program))
   (with-pushed-matrix ()
     (apply-transforms part)
+    (gl:bind-texture :texture-2d (gl-name (texture part)))
     (setf (uniform program "uv_offset") (uv-offset part))
     (setf (uniform program "model_matrix") (model-matrix))
     (%gl:draw-elements :triangles 6 :unsigned-int 0)))
 
+(defmethod (setf direction) (dir (part part)))
+
 (define-class-shader (part :vertex-shader)
   "layout (location = 1) in vec2 in_texcoord;
 uniform vec2 uv_offset = vec2(0,0);
+uniform sampler2D tex_image;
 out vec2 texcoord;
 
 void main(){
-  texcoord = (uv_offset+(in_texcoord*0.999))*(64.0/512.0);
+  ivec2 size = textureSize(tex_image, 0);
+  texcoord = (uv_offset+(in_texcoord*0.999))*(64.0/size.x);
 }")
 
 (define-shader-entity part-parent (part)

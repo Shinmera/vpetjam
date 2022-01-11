@@ -15,15 +15,15 @@
 (progn
   (defmethod setup-scene ((main trial:main) (world world))
     (enter (make-instance 'farm) world)
+    (enter (make-instance 'plot :location (vec (- 0 256 128 64) 0 10000)) world)
+    (enter (make-instance 'plot :location (vec (+ 0 256 128 64) 0 10000)) world)
     (enter (make-instance 'player) world)
-    (enter (make-instance 'camera) world)
-    #-vpetjam-release
-    (enter (make-instance 'trial::fps-counter) (scene main)))
+    (enter (make-instance 'camera) world))
   #!(issue +world+ 'reload-scene))
 
 (defmethod handle ((ev mouse-press) (world world))
   (when (eql :middle (button ev))
-    (enter-and-load (make-instance 'creature :location (vxyy (mouse-world-pos (pos ev)))) world +main+)))
+    (enter-and-load (make-instance 'seed :location (vxyy (mouse-world-pos (pos ev)))) world +main+)))
 
 (defun queue-sort (queue comparator)
   (let ((elements (make-array (flare-queue:queue-size queue))))
