@@ -69,7 +69,8 @@
              :type vec2 :documentation "The velocity of the entity.")
    (state :initform :normal :accessor state
           :type symbol :documentation "The current state of the entity.")
-   (frame-velocity :initform (vec2 0 0) :accessor frame-velocity)))
+   (frame-velocity :initform (vec2 0 0) :accessor frame-velocity)
+   (hit-border :initform NIL :accessor hit-border)))
 
 (defmethod (setf location) (location (entity game-entity))
   (vsetf (location entity) (vx location) (vy location)))
@@ -82,8 +83,15 @@
     (incf (vy loc) (vy vel))
     (vsetf vel 0 0)
     ;; FIXME: this sucks.
-    (setf (vx loc) (clamp (- 100 (vx bsize)) (vx loc) (- (vx bsize) 100)))
-    (setf (vy loc) (clamp (- 100 (vy bsize)) (vy loc) (- (vy bsize) 200)))
+    (cond ((not (<= (- 100 (vx bsize)) (vx loc) (- (vx bsize) 100)))
+           (setf (hit-border entity) :x))
+          ((not (<= (- 100 (vy bsize)) (vy loc) (- (vy bsize) 200)))
+           (setf (hit-border entity) :y))
+          (T
+           (setf (hit-border entity) NIL)))
+    (when (hit-border entity)
+      (setf (vx loc) (clamp (- 100 (vx bsize)) (vx loc) (- (vx bsize) 100)))
+      (setf (vy loc) (clamp (- 100 (vy bsize)) (vy loc) (- (vy bsize) 200))))
     (setf (vz loc) (vy loc))
     (bvh:bvh-update (bvh +world+) entity)))
 
