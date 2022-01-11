@@ -29,6 +29,11 @@
   `(vsetf (load-time-value (vec ,@(loop repeat (length args) collect 0)))
           ,@args))
 
+(defun nvalign (vec grid)
+  (flet ((frob (x)
+           (* (round x grid) grid)))
+    (vapplyf vec frob)))
+
 (defmethod unit (thing (target (eql T)))
   (when +world+
     (unit thing +world+)))

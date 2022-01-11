@@ -12,33 +12,6 @@
 (defmethod leave :after ((unit collider) (world world))
   (bvh:bvh-remove (bvh world) unit))
 
-(defmethod scan ((world world) target on-hit)
-  (bvh:do-fitting (object (bvh world) target)
-    (unless (eq object target)
-      (let ((hit (scan object target on-hit)))
-        (when hit
-          (return hit))))))
-
-(defmethod scan ((world world) (target game-entity) on-hit)
-  (let ((loc (location target))
-        (bsize (bsize target))
-        (vel (frame-velocity target)))
-    (bvh:do-fitting (object (bvh world) (tvec (- (vx2 loc) (vx2 bsize) 20)
-                                               (- (vy2 loc) (vy2 bsize) 20)
-                                               (+ (vx2 loc) (vx2 bsize) 20)
-                                               (+ (vy2 loc) (vy2 bsize) 20)))
-      (unless (eq object target)
-        (let ((hit (scan object target on-hit)))
-          (when hit (return hit)))))))
-
-(defmethod scan ((world world) (target vec4) on-hit)
-  (bvh:do-fitting (object (bvh world) (tvec (- (vx4 target) (vz4 target))
-                                             (- (vy4 target) (vw4 target))
-                                             (+ (vx4 target) (vz4 target))
-                                             (+ (vy4 target) (vw4 target))))
-    (let ((hit (scan object target on-hit)))
-      (when hit (return hit)))))
-
 (progn
   (defmethod setup-scene ((main trial:main) (world world))
     (enter (make-instance 'farm) world)
@@ -58,8 +31,8 @@
           for i from 0
           until (eq cell (flare-queue::tail queue))
           do (setf (aref elements i) cell))
-    (sort elements (lambda (a b)
-                     (funcall comparator (flare-queue:value a) (flare-queue:value b))))
+    (stable-sort elements (lambda (a b)
+                            (funcall comparator (flare-queue:value a) (flare-queue:value b))))
     (loop for left = (flare-queue::head queue) then right
           for right across elements
           do (flare-queue:cell-tie left right))
