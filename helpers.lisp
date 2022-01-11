@@ -6,6 +6,9 @@
 (define-asset (vpetjam 64x) mesh
     (make-rectangle 64 64))
 
+(define-asset (vpetjam 128x) mesh
+    (make-rectangle 128 128))
+
 (define-asset (vpetjam placeholder) image
     #p"placeholder.png")
 

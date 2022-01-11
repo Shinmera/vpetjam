@@ -1,9 +1,9 @@
 (in-package #:org.shirakumo.fraf.vpetjam)
 
 (define-shader-entity cursor (vertex-entity colored-entity sized-entity)
-  ((vertex-array :initform (// 'vpetjam '64x))
+  ((vertex-array :initform (// 'vpetjam '128x))
    (color :initform (vec 1 0 0 0.5))
-   (bsize :initform (vec 32 32))))
+   (bsize :initform (vec 64 64))))
 
 (define-shader-entity player (part-parent playhead facing-entity game-entity)
   ((name :initform 'player)
@@ -119,7 +119,8 @@
   (enter (cursor player) container))
 
 (defmethod leave :after ((player player) (container flare:container))
-  (leave (cursor player) container))
+  (when (slot-boundp (cursor player) 'container)
+    (leave (cursor player) container)))
 
 (defmethod handle ((ev tick) (player player))
   (call-next-method)
