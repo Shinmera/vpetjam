@@ -8,12 +8,19 @@
   (:default-initargs :children '((:face  :uv (0 1) :pivot (0 0) :location (0 -10 0)))))
 
 (defmethod shared-initialize :after ((creature creature) slots &key)
-  (setf (vx (uv-offset creature)) (random 5))
-  (setf (vx (uv-offset (part :face creature))) (random 5))
+  ;; TODO: Don't get all as random, instead get those that can be mutated into from a "NIL" value.
+  (unless (gene creature :body)
+    (let ((body (alexandria:random-elt (genes-of :body :error T))))
+      (set-gene creature body)))
+  (unless (gene creature :face)
+    (let ((face (alexandria:random-elt (genes-of :face :error T))))
+      (set-gene creature face)))
   (unless (gene creature :hue)
     (set-gene creature (alexandria:random-elt (genes-of :hue :error T))))
   (unless (gene creature :speed)
-    (set-gene creature (alexandria:random-elt (genes-of :speed :error T)))))
+    (set-gene creature (alexandria:random-elt (genes-of :speed :error T))))
+  (setf (vx (uv-offset creature)) (value (gene creature :body)))
+  (setf (vx (uv-offset (part :face creature))) (value (gene creature :face))))
 
 (defmethod hue ((creature creature))
   (or (value (gene creature :hue)) (slot-value creature 'hue)))

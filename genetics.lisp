@@ -14,7 +14,6 @@
   (cons (genome gene) (id gene)))
 
 (defmethod cross ((gene gene) (other gene))
-  (format T "CROSSING: ~a,~a~%" gene other)
   (unless (eql (genome gene) (genome other))
     (error "May only cross genes of the same genome."))
   (when (or (eql gene other) (eql (id gene) (id other)))
@@ -39,7 +38,12 @@
         (loop for genome in genes by #'cddr
               for id in (rest genes) by #'cddr
               do (set-gene critter (gene-of genome id :error T)))
-        (loop for gene in genes do (set-gene critter gene)))))
+        (loop for gene in genes do (set-gene critter gene))))
+  (v:info :genetical.init "~a" critter))
+
+(defmethod print-object ((critter genetical) stream)
+  (loop for gene in (gene-list critter)
+        do (format stream "~%~a.~a: ~a" (genome gene) (id gene) (value gene))))
 
 (defmethod genomes ((critter genetical) &key ancestors)
   (let ((genomes (loop for genome in (alexandria:hash-table-keys (genes critter))
