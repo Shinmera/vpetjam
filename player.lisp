@@ -235,7 +235,7 @@
              (receive held found)
              (push held (stack player)))))
       (null
-       (if (<= (vlength (velocity player)) 0.1)
+       (if (<= (vlength (velocity player)) 0.2)
            (loop for entity in (stack player)
                  do (setf (location entity) (location cursor)))
            (loop for entity in (stack player)
