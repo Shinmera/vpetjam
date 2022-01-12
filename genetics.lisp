@@ -32,14 +32,13 @@
    (parents :initarg :parents :accessor parents))
   (:default-initargs :parents NIL))
 
-(defmethod initialize-instance :after ((critter genetical) &key genes)
+(defmethod shared-initialize :after ((critter genetical) slots &key genes)
   (when genes
     (if (keywordp (first genes))
         (loop for genome in genes by #'cddr
               for id in (rest genes) by #'cddr
               do (set-gene critter (gene-of genome id :error T)))
-        (loop for gene in genes do (set-gene critter gene))))
-  (v:info :genetical.init "~a" critter))
+        (loop for gene in genes do (set-gene critter gene)))))
 
 (defmethod print-object ((critter genetical) stream)
   (print-unreadable-object (critter stream :type T :identity T)

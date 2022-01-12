@@ -43,13 +43,3 @@
           (setf (random-direction creature) (float-sign (random* 0.0 1.0)))
           (setf (move-time creature) (random* 2.0 1.0))))
       (nv+ (frame-velocity creature) vel))))
-
-(push (let* ((c (first (stack (unit 'player T))))
-             (n (allocate-instance (class-of c))))
-        (loop for slot in (c2mop:class-slots (class-of c))
-              for name = (c2mop:slot-definition-name slot)
-              when (slot-boundp c name)
-              do (setf (slot-value n name)
-                       (slot-value c name)))
-        n)
-      (stack (unit 'player T)))
