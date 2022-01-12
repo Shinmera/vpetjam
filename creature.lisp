@@ -12,7 +12,7 @@
   (setf (vx (uv-offset creature)) (random 5))
   (setf (vx (uv-offset (part :face creature))) (random 5))
   (setf (hue creature) (alexandria:random-elt '(0.0 1.5 3.0 4.5 6.0)))
-  (setf (spd creature) (alexandria:random-elt '(0.0 0.0 0.5 1.0 3.0 5.0 10.0))))
+  (setf (spd creature) (alexandria:random-elt '(0.2 0.5 1.0 3.0 5.0 10.0))))
 
 (defmethod apply-transforms progn ((creature creature))
   (scale-by 1.5 1.5 1))
