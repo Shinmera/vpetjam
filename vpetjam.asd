@@ -18,6 +18,7 @@
                (:file "camera")
                (:file "world")
                (:file "genetics")
+               (:file "genes")
                (:file "farm")
                (:file "creature")
                (:file "player")
