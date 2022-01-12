@@ -31,7 +31,8 @@
 
 (defmethod receive ((seed seed) (spot spot))
   (maybe-leave seed)
-  (let ((crop (make-instance 'crop :parent spot :location (vcopy (location spot)))))
+  (let ((crop (make-instance 'crop :parent spot :location (vcopy (location spot))
+                                   :genes (gene-list seed))))
     (setf (holding spot) crop)
     (enter-and-load crop (container spot) +main+)))
 
@@ -82,13 +83,15 @@
   (when (and (< 0.5 (bulge-time combine)) (< 0 (work-time combine)))
     (translate-by (random* 0 0.1) (random* 0 0.1) 0)))
 
-(define-shader-entity crop (animated-sprite)
+(define-shader-entity crop (animated-sprite genetical)
   ((name :initform (generate-name 'crop))
    (parent :initarg :parent :accessor parent))
   (:default-initargs :sprite-data (asset 'vpetjam 'crop)))
 
 (defmethod switch-animation :after ((crop crop) next)
-  (enter-and-load (make-instance 'creature :location (location crop)) +world+ +main+)
+  (enter-and-load (make-instance 'creature :location (location crop)
+                                           :genes (gene-list crop))
+                  +world+ +main+)
   (leave* crop +world+)
   (setf (holding (parent crop)) NIL))
 

@@ -1,6 +1,6 @@
 (in-package #:org.shirakumo.fraf.vpetjam)
 
-(define-shader-entity creature (part-parent object)
+(define-shader-entity creature (part-parent object genetical)
   ((name :initform (generate-name 'creature))
    (texture :initform (// 'vpetjam 'creature))
    (move-time :initform 1.0 :accessor move-time)

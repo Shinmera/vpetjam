@@ -58,6 +58,9 @@
 (defmethod set-gene ((critter genetical) (gene gene))
   (setf (gethash (genome gene) (genes critter)) gene))
 
+(defmethod gene-list ((critter genetical))
+  (alexandria:hash-table-values (genes critter)))
+
 (defmethod cross ((critter genetical) (other genetical))
   ;; TODO: Skipping generations.
   (let ((genomes (genomes critter)))
