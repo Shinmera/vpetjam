@@ -14,8 +14,11 @@
   (cons (genome gene) (id gene)))
 
 (defmethod cross ((gene gene) (other gene))
-  ;; (unless (eql (genome gene) (genome other))
-  ;;   (error "May only cross genes of the same genome."))
+  (format T "CROSSING: ~a,~a~%" gene other)
+  (unless (eql (genome gene) (genome other))
+    (error "May only cross genes of the same genome."))
+  (when (or (eql gene other) (eql (id gene) (id other)))
+    (return-from cross gene))
   (cond
     ((and gene other (eql (recessive gene) (recessive other)))
      (if (< (random 1.0) 0.5) gene other))
@@ -29,6 +32,14 @@
   ((genes :initform (make-hash-table) :reader genes)
    (parents :initarg :parents :accessor parents))
   (:default-initargs :parents NIL))
+
+(defmethod initialize-instance :after ((critter genetical) &key genes)
+  (when genes
+    (if (keywordp (first genes))
+        (loop for genome in genes by #'cddr
+              for id in (rest genes) by #'cddr
+              do (set-gene critter (gene-of genome id)))
+        (loop for gene in genes do (set-gene critter gene)))))
 
 (defmethod genomes ((critter genetical) &key ancestors)
   (let ((genomes (loop for genome in (alexandria:hash-table-keys (genes critter))
@@ -49,12 +60,10 @@
 
 (defmethod cross ((critter genetical) (other genetical))
   ;; TODO: Skipping generations.
-  (let ((genomes (genomes critter))
-        (child (make-hash-table)))
+  (let ((genomes (genomes critter)))
     (loop for genome in (genomes other)
           unless (gene critter genome)
           do (push genome genomes))
     (loop for genome in genomes
           for inherited = (cross (gene critter genome) (gene other genome))
-          when inherited do (setf (gethash genome child) inherited))
-    child))
+          when inherited collect inherited)))

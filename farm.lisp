@@ -16,9 +16,10 @@
           do (loop for x from (- s) to (+ s) by 128
                    do (enter (make-instance 'spot :location (v- (location plot) (vec x y y))) container)))))
 
-(define-shader-entity seed (part object)
+(define-shader-entity seed (part object genetical)
   ((texture :initform (// 'vpetjam 'seed))
-   (bsize :initform (vec 32 32))))
+   (bsize :initform (vec 32 32)))
+  (:default-initargs :genes '(:hue :white)))
 
 (defclass spot (game-entity receptacle)
   ((bsize :initform (vec 64 64))
@@ -59,8 +60,10 @@
     (:holding
      (let* ((left (shiftf (holding combine) NIL))
             (right seed)
+            (genes (cross left right))
             (result (make-instance 'seed :location (vcopy (location combine))
-                                         :height 32 :hvel 1.0 :velocity (vec 0 -8))))
+                                         :height 32 :hvel 1.0 :velocity (vec 0 -8)
+                                         :genes genes)))
        (setf (holding combine) result)
        (setf (state combine) :working)))))
 
