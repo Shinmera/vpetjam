@@ -98,16 +98,19 @@
 (define-shader-entity part (vertex-entity textured-entity rotated-entity located-entity)
   ((vertex-array :initform (// 'vpetjam '64x))
    (texture :initform (// 'vpetjam 'player))
-   (uv-offset :initarg :uv-offset :initform (vec 0 0) :accessor uv-offset))
+   (uv-offset :initarg :uv-offset :initform (vec 0 0) :accessor uv-offset)
+   (hue :initform 0.0 :accessor hue))
   (:inhibit-shaders (textured-entity :vertex-shader)))
 
 (defmethod render :before ((part part) (program shader-program))
+  (setf (uniform program "hue") (float (hue part) 0f0))
   (setf (uniform program "uv_offset") (uv-offset part)))
 
 (defmethod render-child ((part part) (program shader-program))
   (with-pushed-matrix ()
     (apply-transforms part)
     (gl:bind-texture :texture-2d (gl-name (texture part)))
+    (setf (uniform program "hue") (float (hue part) 0f0))
     (setf (uniform program "uv_offset") (uv-offset part))
     (setf (uniform program "model_matrix") (model-matrix))
     (%gl:draw-elements :triangles 6 :unsigned-int 0)))
@@ -123,6 +126,35 @@ out vec2 texcoord;
 void main(){
   ivec2 size = textureSize(tex_image, 0);
   texcoord = (uv_offset+(in_texcoord*0.999))*(64.0/size.x);
+}")
+
+(define-class-shader (part :fragment-shader)
+  "uniform float hue = 0.0;
+out vec4 color;
+
+void main(){
+  const vec3  kRGBToYPrime = vec3 (0.299, 0.587, 0.114);
+  const vec3  kRGBToI      = vec3 (0.596, -0.275, -0.321);
+  const vec3  kRGBToQ      = vec3 (0.212, -0.523, 0.311);
+
+  const vec3  kYIQToR     = vec3 (1.0, 0.956, 0.621);
+  const vec3  kYIQToG     = vec3 (1.0, -0.272, -0.647);
+  const vec3  kYIQToB     = vec3 (1.0, -1.107, 1.704);
+
+  float   YPrime  = dot (color.rgb, kRGBToYPrime);
+  float   I       = dot (color.rgb, kRGBToI);
+  float   Q       = dot (color.rgb, kRGBToQ);
+  float   h       = atan (Q, I);
+  float   chroma  = sqrt (I * I + Q * Q);
+
+  h += hue;
+
+  Q = chroma * sin (h);
+  I = chroma * cos (h);
+
+  vec3    yIQ   = vec3 (YPrime, I, Q);
+
+  color.rgb = vec3( dot (yIQ, kYIQToR), dot (yIQ, kYIQToG), dot (yIQ, kYIQToB) );
 }")
 
 (define-shader-entity part-parent (part)

@@ -24,10 +24,9 @@
   ((bsize :initform (vec 64 64))
    (holding :initform NIL :accessor holding)))
 
-(defmethod receive :before ((object object) (spot spot))
-  (when (or (< 0 (height object))
-            (holding spot))
-    (error 'object-not-accepted)))
+(defmethod object-accepted-p ((seed seed) (spot spot))
+  (and (= 0 (height seed))
+       (null (holding spot))))
 
 (defmethod receive ((seed seed) (spot spot))
   (maybe-leave seed)
@@ -39,6 +38,7 @@
   ((texture :initform (// 'vpetjam 'sell))
    (bsize :initform (vec 64 32))))
 
+(defmethod object-accepted-p ((object object) (sell sell)) T)
 (defmethod receive ((object object) (sell sell)))
 
 (define-shader-entity combine (basic-receptacle)
@@ -47,6 +47,9 @@
    (holding :initform NIL :accessor holding)
    (work-time :initform 0.0 :accessor work-time)
    (state :initform :empty :accessor state)))
+
+(defmethod object-accepted-p ((seed seed) (combine combine))
+  (not (eql :working (state combine))))
 
 (defmethod receive ((seed seed) (combine combine))
   (ecase (state combine)
@@ -59,9 +62,7 @@
             (result (make-instance 'seed :location (vcopy (location combine))
                                          :height 32 :hvel 1.0 :velocity (vec 0 -8))))
        (setf (holding combine) result)
-       (setf (state combine) :working)))
-    (:working
-     (call-next-method))))
+       (setf (state combine) :working)))))
 
 (defmethod handle ((ev tick) (combine combine))
   (case (state combine)

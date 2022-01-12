@@ -5,7 +5,11 @@
 (defclass receptacle (collider)
   ())
 
+(defgeneric object-accepted-p (object receptacle))
 (defgeneric receive (object receptacle))
+
+(defmethod object-accepted-p (object (receptacle receptacle))
+  NIL)
 
 (defmethod receive (object (receptacle receptacle))
   (error 'object-not-accepted))
@@ -27,10 +31,11 @@
              (nv* (velocity object) 0.5)
              (setf (hvel object) (* (hvel object) -0.5))
              (setf (height object) 0.1))))
-    (bvh:do-fitting (entity (bvh +world+) object)
-      (when (typep entity 'receptacle)
-        (handler-case (receive object entity)
-          (object-not-accepted ()))))
+    (let ((found (bvh:do-fitting (entity (bvh +world+) object)
+                   (when (and (typep entity 'receptacle)
+                              (object-accepted-p object entity))
+                     (return entity)))))
+      (when found (receive object found)))
     (nv+ (frame-velocity object) (velocity object))))
 
 (defmethod apply-transforms progn ((object object))
