@@ -38,6 +38,6 @@
   (make-gene :speed :fast 5.0)
   (make-gene :speed :extra-fast 10.0)
 
-  (dotimes (i 5)
+  (dotimes (i 8)
     (make-unique-gene :body i)
     (make-unique-gene :face i)))

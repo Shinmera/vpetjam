@@ -23,7 +23,8 @@
   (setf (vx (uv-offset (part :face creature))) (value (gene creature :face))))
 
 (defmethod hue ((creature creature))
-  (or (value (gene creature :hue)) (slot-value creature 'hue)))
+  (let ((hue (gene creature :hue)))
+    (if hue (value hue) (slot-value creature 'hue))))
 
 (defmethod apply-transforms progn ((creature creature))
   (scale-by 1.5 1.5 1))
