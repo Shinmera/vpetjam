@@ -163,21 +163,24 @@ void main(){
 
 (defmethod shared-initialize :after ((entity part-parent) slots &key (children () children-p))
   (when children-p
-    (clrhash (children entity))
-    (loop for (name . props) in children
-          for part = (destructuring-bind (&key uv (pivot '(0 0)) (location '(0 0 0)) (skew '(1 1)) (angle 0) (children ())) props
-                       (flet ((vecify (parts)
-                                (apply #'vec parts)))
-                         (make-instance 'part-parent
-                                        :name name
-                                        :texture (texture entity)
-                                        :uv-offset (vecify uv)
-                                        :pivot (vecify pivot)
-                                        :skew (vecify skew)
-                                        :angle angle
-                                        :location (vecify location)
-                                        :children children)))
-          do (setf (gethash name (children entity)) part)))
+    (setf (children entity) children)))
+
+(defmethod (setf children) ((children cons) (entity part-parent))
+  (clrhash (children entity))
+  (loop for (name . props) in children
+        for part = (destructuring-bind (&key uv (pivot '(0 0)) (location '(0 0 0)) (skew '(1 1)) (angle 0) (children ())) props
+                     (flet ((vecify (parts)
+                              (apply #'vec parts)))
+                       (make-instance 'part-parent
+                                      :name name
+                                      :texture (texture entity)
+                                      :uv-offset (vecify uv)
+                                      :pivot (vecify pivot)
+                                      :skew (vecify skew)
+                                      :angle angle
+                                      :location (vecify location)
+                                      :children children)))
+        do (setf (gethash name (children entity)) part))
   (setf (render-list entity) (sort (alexandria:hash-table-values (children entity)) #'>
                                    :key (lambda (p) (vz (location p))))))
 
@@ -207,6 +210,7 @@ void main(){
             do (pop children)
                (render-child child program))
       (gl:bind-texture :texture-2d (gl-name (texture entity)))
+      (setf (uniform program "hue") (float (hue entity) 0f0))
       (setf (uniform program "uv_offset") (uv-offset entity))
       (setf (uniform program "model_matrix") (model-matrix))
       (%gl:draw-elements :triangles 6 :unsigned-int 0)
