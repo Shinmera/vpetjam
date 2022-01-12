@@ -17,23 +17,20 @@
      (setf (gethash (key gene) *genes*) gene)
      gene))
 
-(defun make-hue-gene (name hue &optional recessive)
-  (make-gene :hue name hue recessive))
-
-(progn
-  (make-hue-gene :white (vec3 1 1 1))
-  (make-hue-gene :red (vec3 1 0 0))
-  (make-hue-gene :green (vec3 0 1 0))
-  (make-hue-gene :blue (vec3 0 0 1)))
-
 (defun make-unique-gene (genome value &optional recessive)
   (let ((name (intern (format NIL "~a-~d" genome (1+ (length (genes-of genome)))) :keyword)))
     (make-gene genome name value recessive)))
 
-(defun make-speed-gene (speed &optional recessive)
-  (make-unique-gene :speed speed recessive))
-
 (progn
+  (loop for key in (alexandria:hash-table-keys *genes*)
+        do (remhash key *genes*))
+
+  (make-unique-gene :hue 0.0)
+  (make-unique-gene :hue 1.5)
+  (make-unique-gene :hue 3.0)
+  (make-unique-gene :hue 4.5)
+  (make-unique-gene :hue 6.0)
+
   (make-gene :speed :extra-slow 0.2)
   (make-gene :speed :very-slow 0.5)
   (make-gene :speed :slow 1.0)

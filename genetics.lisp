@@ -38,7 +38,7 @@
     (if (keywordp (first genes))
         (loop for genome in genes by #'cddr
               for id in (rest genes) by #'cddr
-              do (set-gene critter (gene-of genome id)))
+              do (set-gene critter (gene-of genome id :error T)))
         (loop for gene in genes do (set-gene critter gene)))))
 
 (defmethod genomes ((critter genetical) &key ancestors)

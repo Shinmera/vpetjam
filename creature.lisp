@@ -10,10 +10,13 @@
 (defmethod shared-initialize :after ((creature creature) slots &key)
   (setf (vx (uv-offset creature)) (random 5))
   (setf (vx (uv-offset (part :face creature))) (random 5))
-  (setf (hue creature) (alexandria:random-elt '(0.0 1.5 3.0 4.5 6.0)))
+  (unless (gene creature :hue)
+    (set-gene creature (alexandria:random-elt (genes-of :hue :error T))))
   (unless (gene creature :speed)
-    (let ((spd (alexandria:random-elt '(:extra-slow :very-slow :slow :medium :fast :very-fast))))
-      (set-gene creature (gene-of :speed spd)))))
+    (set-gene creature (alexandria:random-elt (genes-of :speed :error T)))))
+
+(defmethod hue ((creature creature))
+  (or (value (gene creature :hue)) (slot-value creature 'hue)))
 
 (defmethod apply-transforms progn ((creature creature))
   (scale-by 1.5 1.5 1))

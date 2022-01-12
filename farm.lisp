@@ -18,8 +18,7 @@
 
 (define-shader-entity seed (part object genetical)
   ((texture :initform (// 'vpetjam 'seed))
-   (bsize :initform (vec 32 32)))
-  (:default-initargs :genes '(:hue :white)))
+   (bsize :initform (vec 32 32))))
 
 (defclass spot (game-entity receptacle)
   ((bsize :initform (vec 64 64))
