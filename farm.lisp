@@ -30,11 +30,53 @@
     (error 'object-not-accepted)))
 
 (defmethod receive ((seed seed) (spot spot))
-  (print (list spot (location spot)))
   (maybe-leave seed)
   (let ((crop (make-instance 'crop :parent spot :location (vcopy (location spot)))))
     (setf (holding spot) crop)
     (enter-and-load crop (container spot) +main+)))
+
+(define-shader-entity sell (basic-receptacle)
+  ((texture :initform (// 'vpetjam 'sell))
+   (bsize :initform (vec 64 32))))
+
+(defmethod receive ((object object) (sell sell)))
+
+(define-shader-entity combine (basic-receptacle)
+  ((texture :initform (// 'vpetjam 'combine))
+   (bsize :initform (vec 48 48))
+   (holding :initform NIL :accessor holding)
+   (work-time :initform 0.0 :accessor work-time)
+   (state :initform :empty :accessor state)))
+
+(defmethod receive ((seed seed) (combine combine))
+  (ecase (state combine)
+    (:empty
+     (setf (holding combine) seed)
+     (setf (state combine) :holding))
+    (:holding
+     (let* ((left (shiftf (holding combine) NIL))
+            (right seed)
+            (result (make-instance 'seed :location (vcopy (location combine))
+                                         :height 32 :hvel 1.0 :velocity (vec 0 -8))))
+       (setf (holding combine) result)
+       (setf (state combine) :working)))
+    (:working
+     (call-next-method))))
+
+(defmethod handle ((ev tick) (combine combine))
+  (case (state combine)
+    (:working
+     (let ((tt (incf (work-time combine) (dt ev))))
+       (cond ((<= 1.2 tt)
+              (setf (work-time combine) 0.0)
+              (setf (state combine) :empty))
+             ((and (<= 1.0 tt) (holding combine))
+              (enter-and-load (holding combine) (container combine) +main+)
+              (setf (holding combine) NIL)))))))
+
+(defmethod apply-transforms progn ((combine combine))
+  (when (and (< 0.5 (bulge-time combine)) (< 0 (work-time combine)))
+    (translate-by (random* 0 0.1) (random* 0 0.1) 0)))
 
 (define-shader-entity crop (animated-sprite)
   ((name :initform (generate-name 'crop))

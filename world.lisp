@@ -17,6 +17,8 @@
     (enter (make-instance 'farm) world)
     (enter (make-instance 'plot :location (vec (- 0 256 128 64) 0 10000)) world)
     (enter (make-instance 'plot :location (vec (+ 0 256 128 64) 0 10000)) world)
+    (enter (make-instance 'sell :location (vec (- 0 256 128 64) (- 0 256 128 64) (- 0 256 128 64))) world)
+    (enter (make-instance 'combine :location (vec 0 (- 0 256 64) (- 0 256 64))) world)
     (enter (make-instance 'player) world)
     (enter (make-instance 'camera) world))
   #!(issue +world+ 'reload-scene))

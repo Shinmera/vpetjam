@@ -135,6 +135,9 @@
 (defmethod enter :after ((player player) (container flare:container))
   (enter (cursor player) container))
 
+(defmethod apply-transforms progn ((player player))
+  (translate-by 0 64 0))
+
 (defmethod handle ((ev tick) (player player))
   (call-next-method)
   (let ((vel (velocity player))
@@ -169,8 +172,8 @@
                (decf (vy vel) (float-sign (vy vel) (* y-mult dcc dt))))))
     (nv+ (frame-velocity player) vel))
   (setf (location (cursor player))
-        (nv+ (nvalign (v+ (location player) (vxy_ (v* (direction player) 128))) 128)
-             (vec 0 -64 0))))
+        (nv+ (nvalign (v+ (location player) (vxy_ (v* (direction player) 128)) (vec 0 -64 0)) 128)
+             (vec 0 64 64))))
 
 (defmethod handle :after ((ev tick) (player player))
   (let ((vel (velocity player)))
