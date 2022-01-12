@@ -50,17 +50,17 @@
    (work-time :initform 0.0 :accessor work-time)
    (state :initform :empty :accessor state)))
 
-(defmethod object-accepted-p ((seed seed) (combine combine))
+(defmethod object-accepted-p ((thing genetical) (combine combine))
   (not (eql :working (state combine))))
 
-(defmethod receive ((seed seed) (combine combine))
+(defmethod receive ((thing genetical) (combine combine))
   (ecase (state combine)
     (:empty
-     (setf (holding combine) seed)
+     (setf (holding combine) thing)
      (setf (state combine) :holding))
     (:holding
      (let* ((left (shiftf (holding combine) NIL))
-            (right seed)
+            (right thing)
             (genes (cross left right))
             (result (make-instance 'seed :location (vcopy (location combine))
                                          :height 32 :hvel 1.0 :velocity (vec 0 -8)
