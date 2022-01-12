@@ -42,8 +42,9 @@
   (v:info :genetical.init "~a" critter))
 
 (defmethod print-object ((critter genetical) stream)
-  (loop for gene in (gene-list critter)
-        do (format stream "~%~a.~a: ~a" (genome gene) (id gene) (value gene))))
+  (print-unreadable-object (critter stream :type T :identity T)
+    (loop for gene in (gene-list critter)
+          do (format stream " ~a: ~a (~a)" (genome gene) (id gene) (value gene)))))
 
 (defmethod genomes ((critter genetical) &key ancestors)
   (let ((genomes (loop for genome in (alexandria:hash-table-keys (genes critter))
