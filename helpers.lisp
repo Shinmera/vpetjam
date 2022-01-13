@@ -15,6 +15,8 @@
 (define-asset (vpetjam placeholder) image
     #p"placeholder.png")
 
+(define-shader-entity player () ())
+
 (defclass collider () ())
 
 (defmethod (setf location) :after (loc (collider collider))
