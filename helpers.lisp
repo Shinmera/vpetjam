@@ -227,3 +227,8 @@ void main(){
       (if (typep child 'part-parent)
           (setf (direction child) dir)
           (setf (vx (uv-offset child)) off)))))
+
+(defclass interactable (sized-entity)
+  ())
+
+(defgeneric interact (interactable source))

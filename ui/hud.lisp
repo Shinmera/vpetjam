@@ -1,10 +1,13 @@
 (in-package #:org.shirakumo.fraf.vpetjam)
 
+(defun format-money (money)
+  (format NIL "~c ~d" (code-char #xA4) money))
+
 (defclass money-display (alloy:label)
   ())
 
 (defmethod alloy:text ((display money-display))
-  (format NIL "~c ~d" (code-char #xA4) (alloy:value display)))
+  (format-money (alloy:value display)))
 
 (presentations:define-realization (ui money-display)
   ((label simple:text)

@@ -194,10 +194,51 @@
 
 (defmethod show :after ((panel pausing-panel) &key)
   ;; Clear pending events to avoid spurious inputs
-  (discard-events +world+)
-  (pause-game T (unit 'ui-pass T)))
+  (discard-events +world+))
 
 (defmethod hide :after ((panel pausing-panel))
   ;; Clear pending events to avoid spurious inputs
-  (discard-events +world+)
-  (unpause-game T (unit 'ui-pass T)))
+  (discard-events +world+))
+
+(defclass eating-constraint-layout (org.shirakumo.alloy.layouts.constraint:layout)
+  ())
+
+(defmethod alloy:handle ((ev alloy:pointer-event) (focus eating-constraint-layout))
+  (restart-case
+      (call-next-method)
+    (alloy:decline ()
+      T)))
+
+(presentations:define-realization (ui eating-constraint-layout)
+  ((:bg simple:rectangle)
+   (alloy:margins)
+   :pattern (colored:color 1 1 1 0.75)))
+
+(defclass button (alloy:button*)
+  ())
+
+(presentations:define-realization (ui button)
+  ((:background simple:rectangle)
+   (alloy:margins))
+  ((border simple:rectangle)
+   (alloy:margins)
+   :line-width (alloy:un 1))
+  ((:label simple:text)
+   (alloy:margins 5 10 10 5)
+   alloy:text
+   :font (setting :display :font)
+   :halign :middle
+   :valign :middle))
+
+(presentations:define-update (ui button)
+  (:background
+   :pattern (if alloy:focus colors:white (colored:color 1 1 1 0.1)))
+  (border
+   :pattern (if alloy:focus colors:transparent colors:white))
+  (:label
+   :size (alloy:un 20)
+   :pattern colors:black))
+
+(presentations:define-animated-shapes button
+  (:background (simple:pattern :duration 0.2))
+  (border (simple:pattern :duration 0.3)))

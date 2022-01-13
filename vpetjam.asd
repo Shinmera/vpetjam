@@ -26,7 +26,8 @@
                (:file "main")
                (:module "ui"
                 :components ((:file "general")
-                             (:file "hud"))))
+                             (:file "hud")
+                             (:file "shop"))))
   :serial T
   :defsystem-depends-on (:deploy)
   :depends-on (:trial-glfw

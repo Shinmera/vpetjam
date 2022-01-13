@@ -37,7 +37,7 @@
 
 (define-shader-entity sell (basic-receptacle)
   ((texture :initform (// 'vpetjam 'sell))
-   (bsize :initform (vec 64 32))))
+   (bsize :initform (vec 80 48))))
 
 (defgeneric sale-value (object))
 (defmethod sale-value (object) 100)
@@ -47,9 +47,16 @@
 (defmethod receive ((object object) (sell sell))
   (incf (money (unit 'player +world+)) (sale-value object)))
 
+(define-shader-entity buy (basic-entity collider interactable)
+  ((texture :initform (// 'vpetjam 'buy))
+   (bsize :initform (vec 64 64))))
+
+(defmethod interact ((buy buy) (player player))
+  (show-panel 'shop :player player))
+
 (define-shader-entity combine (basic-receptacle)
   ((texture :initform (// 'vpetjam 'combine))
-   (bsize :initform (vec 48 48))
+   (bsize :initform (vec 64 64))
    (holding :initform NIL :accessor holding)
    (work-time :initform 0.0 :accessor work-time)
    (state :initform :empty :accessor state)))
