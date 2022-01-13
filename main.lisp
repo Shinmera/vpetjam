@@ -84,7 +84,8 @@
   scene)
 
 (defmethod setup-rendering :after ((main main))
-  (disable :cull-face :scissor-test :depth-test))
+  (disable :cull-face :scissor-test :depth-test)
+  (show-panel 'hud))
 
 (defun apply-video-settings (&optional (settings (setting :display)))
   (when *context*

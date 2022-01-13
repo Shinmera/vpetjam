@@ -39,8 +39,13 @@
   ((texture :initform (// 'vpetjam 'sell))
    (bsize :initform (vec 64 32))))
 
+(defgeneric sale-value (object))
+(defmethod sale-value (object) 100)
+
 (defmethod object-accepted-p ((object object) (sell sell)) T)
-(defmethod receive ((object object) (sell sell)))
+
+(defmethod receive ((object object) (sell sell))
+  (incf (money (unit 'player +world+)) (sale-value object)))
 
 (define-shader-entity combine (basic-receptacle)
   ((texture :initform (// 'vpetjam 'combine))

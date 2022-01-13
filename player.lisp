@@ -22,12 +22,13 @@
   (when (target cursor)
     (call-next-method)))
 
-(define-shader-entity player (part-parent playhead facing-entity game-entity)
+(define-shader-entity player (part-parent playhead facing-entity game-entity alloy:observable-object)
   ((name :initform 'player)
    (stack :initform () :accessor stack)
    (uv-offset :initform (vec 0 6))
    (action-playhead :initform (make-instance 'playhead) :accessor action-playhead)
-   (cursor :initform (make-instance 'cursor) :accessor cursor))
+   (cursor :initform (make-instance 'cursor) :accessor cursor)
+   (money :initform 0 :accessor money))
   (:default-initargs :children '((:head  :uv (0 7) :pivot (0 -18) :children ((:face :uv (0 1) :location (0   0 -1))))
                                  (:lleg  :uv (0 5) :pivot (0  28) :children ((:foot :uv (0 4) :location (0 -32 +1))))
                                  (:rleg  :uv (0 5) :pivot (0  28) :children ((:foot :uv (0 4) :location (0 -32 +1))))
@@ -199,6 +200,8 @@
     (advance (action-playhead player) player (dt ev))
     (setf (render-list player) (sort (alexandria:hash-table-values (children player)) #'>
                                      :key (lambda (p) (vz (location p)))))))
+
+(defmethod pick-up (thing (player player)))
 
 (defmethod pick-up ((object object) (player player))
   (setf (location object) (vec 0 -50 +1))

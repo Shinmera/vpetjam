@@ -25,7 +25,8 @@
                (:file "cheats")
                (:file "main")
                (:module "ui"
-                :components ((:file "general"))))
+                :components ((:file "general")
+                             (:file "hud"))))
   :serial T
   :defsystem-depends-on (:deploy)
   :depends-on (:trial-glfw
