@@ -18,14 +18,24 @@
     (error "May only cross genes of the same genome."))
   (when (or (eql gene other) (eql (id gene) (id other)))
     (return-from cross gene))
-  (cond
-    ((and gene other (eql (recessive gene) (recessive other)))
-     (if (< (random 1.0) 0.5) gene other))
-    ((and gene other)
-     (if (< (random 1.0) 0.375)
-         (if (recessive gene) gene other)
-         (if (recessive gene) other gene)))
-    (T (or gene other))))
+  (when (or (null gene) (null other))
+    (return-from cross (or gene other)))
+  (case (genome gene)
+    (:hue
+     (make-gene :hue NIL (angle-midpoint (value gene) (value other))
+                (if (< (random 1.0) 0.5) (recessive gene) (recessive other))))
+    (:speed
+     (let* ((medium (value (gene-of :speed :medium)))
+            (speed (+ medium (* 0.8 (+ (- (value gene) medium) (- (value other) medium))))))
+       (v:info :gene.cross "~a + ~a = ~a" (value gene) (value other) speed)
+       (make-gene :speed NIL (clamp 0.0 speed 20.0)
+                  (if (< (random 1.0) 0.5) (recessive gene) (recessive other)))))
+    (T
+     (if (eql (recessive gene) (recessive other))
+         (if (< (random 1.0) 0.5) gene other)
+         (if (< (random 1.0) 0.375)
+             (if (recessive gene) gene other)
+             (if (recessive gene) other gene))))))
 
 (defclass genetical ()
   ((genes :initform (make-hash-table) :reader genes)
