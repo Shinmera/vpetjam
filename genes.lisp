@@ -14,22 +14,23 @@
 
 (defun make-gene (genome name value &optional recessive)
   (let ((gene (make-instance 'gene :genome genome :id name :value value :recessive recessive)))
-     (setf (gethash (key gene) *genes*) gene)
-     gene))
+    (when name (setf (gethash (key gene) *genes*) gene))
+    gene))
 
-(defun make-unique-gene (genome value &optional recessive)
+(defun make-numbered-gene (genome value &optional recessive)
   (let ((name (intern (format NIL "~a-~d" genome (1+ (length (genes-of genome)))) :keyword)))
     (make-gene genome name value recessive)))
 
 (progn
+  ;; TODO: Move this into some sort of an initialisation.
   (loop for key in (alexandria:hash-table-keys *genes*)
         do (remhash key *genes*))
 
-  (make-unique-gene :hue 0.0)
-  (make-unique-gene :hue 1.5)
-  (make-unique-gene :hue 3.0)
-  (make-unique-gene :hue 4.5)
-  (make-unique-gene :hue 6.0)
+  (make-numbered-gene :hue 0.0)
+  (make-numbered-gene :hue 1.5)
+  (make-numbered-gene :hue 3.0)
+  (make-numbered-gene :hue 4.5)
+  (make-numbered-gene :hue 6.0)
 
   (make-gene :speed :extra-slow 0.2)
   (make-gene :speed :very-slow 0.5)
@@ -39,5 +40,5 @@
   (make-gene :speed :extra-fast 10.0)
 
   (dotimes (i 8)
-    (make-unique-gene :body i)
-    (make-unique-gene :face i)))
+    (make-numbered-gene :body i)
+    (make-numbered-gene :face i)))

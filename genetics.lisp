@@ -5,8 +5,8 @@
    (genome :initarg :genome :reader genome)
    (value :initarg :value :accessor value)
    (recessive :initarg :recessive :accessor recessive))
-  (:default-initargs :id (error "ID required")
-                     :genome (error "GENOME required")
+  (:default-initargs :genome (error "GENOME required")
+                     :id NIL
                      :value NIL
                      :recessive NIL))
 
