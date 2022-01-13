@@ -21,9 +21,11 @@
     (set-gene creature (alexandria:random-elt (genes-of :hue :error T))))
   (unless (gene creature :speed)
     (set-gene creature (alexandria:random-elt (genes-of :speed :error T))))
+  (unless (gene creature :hat)
+    (set-gene creature (gene-of :hat :hat-1 :error T)))
   (setf (vx (uv-offset creature)) (value (gene creature :body)))
   (setf (vx (uv-offset (part :face creature))) (value (gene creature :face)))
-  (setf (vx (uv-offset (part :hat creature))) (alexandria:random-elt '(1 2 3 4)))
+  (setf (vx (uv-offset (part :hat creature))) (value (gene creature :hat)))
   (setf (hue creature) (value (gene creature :hue)))
   (setf (spd creature) (value (gene creature :speed))))
 

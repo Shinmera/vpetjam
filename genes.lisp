@@ -41,4 +41,7 @@
 
   (dotimes (i 8)
     (make-numbered-gene :body i)
-    (make-numbered-gene :face i)))
+    (make-numbered-gene :face i))
+
+  (dotimes (i 5)
+    (make-numbered-gene :hat i)))
