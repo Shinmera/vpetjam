@@ -34,6 +34,11 @@
            (* (round x grid) grid)))
     (vapplyf vec frob)))
 
+(defun vsqrdist2 (a b)
+  (declare (optimize speed))
+  (+ (expt (- (vx a) (vx b)) 2)
+     (expt (- (vy a) (vy b)) 2)))
+
 (defmethod unit (thing (target (eql T)))
   (when +world+
     (unit thing +world+)))

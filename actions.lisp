@@ -16,6 +16,8 @@
 
 (define-action-set in-game (exclusive-action-set))
 (define-action interact (in-game))
+(define-action pick-up (in-game))
+(define-action drop (in-game))
 (define-action jump (in-game))
 (define-action left (in-game analog-action))
 (define-action right (in-game analog-action))
