@@ -6,7 +6,8 @@
    (move-time :initform 1.0 :accessor move-time)
    (spd :initform 0.0 :accessor spd)
    (random-direction :initform -1 :accessor random-direction))
-  (:default-initargs :children '((:face  :uv (0 1) :pivot (0 0) :location (0 -10 0)))))
+  (:default-initargs :children '((:face  :uv (0 1) :pivot (0 0) :location (0 -10 0))
+                                 (:hat   :uv (1 2) :pivot (0 0) :location (0  20 0)))))
 
 (defmethod shared-initialize :after ((creature creature) slots &key)
   ;; TODO: Don't get all as random, instead get those that can be mutated into from a "NIL" value.
@@ -22,6 +23,7 @@
     (set-gene creature (alexandria:random-elt (genes-of :speed :error T))))
   (setf (vx (uv-offset creature)) (value (gene creature :body)))
   (setf (vx (uv-offset (part :face creature))) (value (gene creature :face)))
+  (setf (vx (uv-offset (part :hat creature))) (alexandria:random-elt '(1 2 3 4)))
   (setf (hue creature) (value (gene creature :hue)))
   (setf (spd creature) (value (gene creature :speed))))
 
@@ -38,8 +40,13 @@
         (:y (setf (vy vel) (* -1 (vy vel)))))
       (when (<= (decf (move-time creature) (dt ev)) 0.0)
         (let ((pol (cartesian->polar vel)))
-          (v<- vel (polar->cartesian (vec (spd creature) (+ (vy pol) (* (random-direction creature) (dt ev) 3))))))
+          (v<- vel (polar->cartesian (vec
+                                      (lerp (vx pol) (spd creature) 0.3)
+                                      (+ (vy pol) (* (random-direction creature) (dt ev) 3))))))
         (when (<= (move-time creature) -0.5)
           (setf (random-direction creature) (float-sign (random* 0.0 1.0)))
           (setf (move-time creature) (random* 2.0 1.0))))
-      (nv+ (frame-velocity creature) vel))))
+      (nv+ (frame-velocity creature) vel)))
+  (setf (angle (part :hat creature))
+        (float-sign (vx (velocity creature))
+                    (* 0.5 (/ (vlength (velocity creature)) 10.0)))))
