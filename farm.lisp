@@ -72,7 +72,9 @@
     (:holding
      (let* ((left (shiftf (holding combine) NIL))
             (right thing)
-            (genes (cross left right))
+            (genes (if (and left right) ;; FIXME: How did I get a NIL to one of these?
+                       (cross left right)
+                       (when (or left right) (gene-list (or left right)))))
             (result (make-instance 'seed :location (vcopy (location combine))
                                          :height 32 :hvel 1.0 :velocity (vec 0 -8)
                                          :genes genes)))

@@ -96,5 +96,9 @@
           unless (gene critter genome)
           do (push genome genomes))
     (loop for genome in genomes
-          for inherited = (cross (gene critter genome) (gene other genome))
+          for gene-a = (gene critter genome)
+          for gene-b = (gene other genome)
+          for inherited = (if (and gene-a gene-b)
+                              (cross gene-a gene-b)
+                              (or gene-a gene-b))
           when inherited collect inherited)))
