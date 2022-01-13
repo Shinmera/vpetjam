@@ -233,6 +233,7 @@
     (bvh:do-fitting (entity (bvh +world+) (vec4 (- (vx loc) 128) (- (vy loc) 128)
                                                 (+ (vx loc) 128) (+ (vy loc) 128)))
       (when (and (not (eq player entity))
+                 (typep entity 'object)
                  (or (null held) (eql (type-of entity) (type-of held)))
                  (or (null nearest) (< (vsqrdist2 loc (location entity))
                                        (vsqrdist2 loc (location nearest)))))

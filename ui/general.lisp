@@ -194,11 +194,13 @@
 
 (defmethod show :after ((panel pausing-panel) &key)
   ;; Clear pending events to avoid spurious inputs
-  (discard-events +world+))
+  (discard-events +world+)
+  (clear-retained))
 
 (defmethod hide :after ((panel pausing-panel))
   ;; Clear pending events to avoid spurious inputs
-  (discard-events +world+))
+  (discard-events +world+)
+  (clear-retained))
 
 (defclass eating-constraint-layout (org.shirakumo.alloy.layouts.constraint:layout)
   ())
