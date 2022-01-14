@@ -253,8 +253,9 @@
               (when (and (<= (vlength (velocity player)) 1.0)
                          (typep entity '(and receptacle (not spot)))
                          (object-accepted-p held entity))
-                (dolist (held (shiftf (stack player) NIL))
-                  (receive held entity))
+                (loop for held = (pop (stack player))
+                      while (object-accepted-p held entity)g
+                      do (receive held entity))
                 (return T))
               (when (and (typep entity 'interactable)
                          (null held))
