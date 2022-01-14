@@ -1,47 +1,35 @@
 (in-package #:org.shirakumo.fraf.vpetjam)
 
-(defparameter *genes* (make-hash-table :test 'equal))
+(defun genomes ()
+  (list :hue :speed :face :body :hat))
 
-(defun gene-of (genome id &key error)
-  (or (gethash (cons genome id) *genes*)
-      (when error (error "No such gene: ~a,~a" genome id))))
-
-(defun genes-of (genome &key error)
+(defun gene-initial (genome)
   (declare (type keyword genome))
-  (or (loop for key in (alexandria:hash-table-keys *genes*)
-            when (eql genome (car key)) collect (gethash key *genes*))
-      (when error (error "No such genome: ~a" genome))))
+  (case genome
+    (:hat 0)
+    (T (alexandria:random-elt (gene-potential genome)))))
 
-(defun make-gene (genome name value &optional recessive)
-  (let ((gene (make-instance 'gene :genome genome :id name :value value :recessive recessive)))
-    (when name (setf (gethash (key gene) *genes*) gene))
-    gene))
+(defun gene-potential (genome)
+  (declare (type keyword genome))
+  (case genome
+    (:speed '(0.2 0.5 1.0 3.0 5.0 10.0)) ;; Might be any decimal from 0 to 20 (inclusive).
+    (:hue '(0.0 1.5 3.0 4.5 6.0)) ;; Might be any decimal from 0 to 2 * pi (exclusive).
+    (:body (loop for i from 0 below 8 collect i))
+    (:face (loop for i from 0 below 8 collect i))
+    (:hat (loop for i from 0 below 5 collect i))))
 
-(defun make-numbered-gene (genome value &optional recessive)
-  (let ((name (intern (format NIL "~a-~d" genome (1+ (length (genes-of genome)))) :keyword)))
-    (make-gene genome name value recessive)))
-
-(progn
-  ;; TODO: Move this into some sort of an initialisation.
-  (loop for key in (alexandria:hash-table-keys *genes*)
-        do (remhash key *genes*))
-
-  (make-numbered-gene :hue 0.0)
-  (make-numbered-gene :hue 1.5)
-  (make-numbered-gene :hue 3.0)
-  (make-numbered-gene :hue 4.5)
-  (make-numbered-gene :hue 6.0)
-
-  (make-gene :speed :extra-slow 0.2)
-  (make-gene :speed :very-slow 0.5)
-  (make-gene :speed :slow 1.0)
-  (make-gene :speed :medium 3.0)
-  (make-gene :speed :fast 5.0)
-  (make-gene :speed :extra-fast 10.0)
-
-  (dotimes (i 8)
-    (make-numbered-gene :body i)
-    (make-numbered-gene :face i))
-
-  (dotimes (i 5)
-    (make-numbered-gene :hat i)))
+(defun cross-gene (genome gene-a gene-b)
+  (declare (type keyword genome))
+  (declare (type (or null number) gene-a gene-b))
+  (when (or (null gene-a) (null gene-b))
+    (return-from cross-gene (or gene-a gene-b)))
+  (case genome
+    (:hue (angle-midpoint gene-a gene-b))
+    (:speed
+     (let ((medium 3.0)) ;; FIXME: Should this be in a global parameter?
+       (clamp 0.0 (+ medium (* 0.8 (+ (- gene-a medium) (- gene-b medium)))) 20.0)))
+    (:hat
+     (if (< (random 1.0) 0.2) ;; FIXME: Same as above. Also is this a good value?
+         (alexandria:random-elt (remove 0 (gene-potential :hat)))
+         (if (< (random 1.0) 0.5) gene-a gene-b)))
+    (T (if (< (random 1.0) 0.5) gene-a gene-b))))
