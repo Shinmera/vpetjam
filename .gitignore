@@ -1,0 +1,8 @@
+bin/
+doc/*.html
+*~
+.*
+data/music/*.wav
+releases/*/
+releases/*.zip
+Thumbs.db
