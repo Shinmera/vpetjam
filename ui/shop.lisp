@@ -71,7 +71,7 @@
     (alloy:enter money layout :constraints `((:left 50) (:above ,clipper 10) (:size 1000 50)))
     (loop for (name cost . initargs) in '((basic-seed 10 :genes (:body :random))
                                           (personal-seed 20 :genes (:body :random :face :random))
-                                          (hued-seed 50 :genes (:body :random :face :random))
+                                          (hued-seed 50 :genes (:body :random :hue :random))
                                           (slow-seed 100 :genes (:body :random :speed :slow))
                                           (fast-seed 200 :genes (:body :random :speed :fast))
                                           (hat-seed 500 :genes (:body :random :hat :random)))
