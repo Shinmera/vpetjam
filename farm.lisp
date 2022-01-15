@@ -20,6 +20,10 @@
   ((texture :initform (// 'vpetjam 'seed))
    (bsize :initform (vec 32 32))))
 
+(defmethod sale-value ((seed seed))
+  ;; 10% of the raised creature price.
+  (* 10 (round (/ (* (call-next-method) (price-multiplier seed)) 100.0))))
+
 (defclass spot (game-entity receptacle)
   ((bsize :initform (vec 64 64))
    (holding :initform NIL :accessor holding)))
@@ -100,6 +104,9 @@
   ((name :initform (generate-name 'crop))
    (parent :initarg :parent :accessor parent))
   (:default-initargs :sprite-data (asset 'vpetjam 'crop)))
+
+(defmethod shared-initialize :after ((crop crop) slots &key)
+  (setf (playback-speed crop) (/ (gene crop :growth))))
 
 (defmethod switch-animation :after ((crop crop) next)
   (enter-and-load (make-instance 'creature :location (location crop)

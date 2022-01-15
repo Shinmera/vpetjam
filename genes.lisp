@@ -1,12 +1,18 @@
 (in-package #:org.shirakumo.fraf.vpetjam)
 
-(defparameter *genomes* '(:hue :speed :face :body :hat))
+(defparameter *genomes* '(:hue :speed :face :body :hat :growth))
+
+(defun gene-growth (body)
+  ;; Growth is special. Use this instead of gene-initial.
+  ;; Between roughly 0.5 and 4.0.
+  (if (< 0 body) (1+ (* 1.5 (log body))) 0.5))
 
 (defun gene-initial (genome)
   (declare (type keyword genome))
   (case genome
     (:speed 3.0)
     (:hue 0.0)
+    (:growth 1.0) ;; Growth initial isn't used anywhere.
     (T 0)))
 
 (defun gene-potential (genome)
@@ -16,10 +22,12 @@
     (:hue '(0.0 1.5 3.0 4.5 6.0)) ;; Might be any decimal from 0 to 2 * pi (exclusive).
     (:body (loop for i from 0 below 8 collect i))
     (:face (loop for i from 0 below 8 collect i))
-    (:hat (loop for i from 0 below 5 collect i))))
+    (:hat (loop for i from 0 below 5 collect i))
+    (:growth 1.0))) ;; Growth potential isn't used anywhere.
 
 (defun gene-random (genome &key include-initial)
   (declare (type keyword genome))
+  (declare (type boolean include-initial))
   (let ((potential (if include-initial
                        (gene-potential genome)
                        (remove (gene-initial genome) (gene-potential genome)))))
@@ -63,4 +71,4 @@
        (1+ (abs (- (abs (- pi initial)) (abs (- pi value))))))
       (:face (if (/= initial value) 1.5 1.0)) ;; Any non-standard gives 1.5.
       (:hat (if (/= initial value) 3.5 1.0)) ;; Any non-standard gives 3.5.
-      (T 1.0)))) ;; Nothing special about vegetable types.
+      (T 1.0)))) ;; Nothing special about vegetable types or growth speed.

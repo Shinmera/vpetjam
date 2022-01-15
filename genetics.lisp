@@ -5,11 +5,14 @@
 
 (defmethod shared-initialize :after ((critter genetical) slots &key genes)
   (loop for genome in *genomes*
+        unless (eql genome :growth)
         do (set-gene critter genome (gene-initial genome)))
   (when genes
     (loop for genome in genes by #'cddr
           for value in (rest genes) by #'cddr
-          do (set-gene critter genome value))))
+          do (set-gene critter genome value)))
+  (unless (gene critter :growth)
+    (set-gene critter :growth (gene-growth (gene critter :body)))))
 
 (defmethod print-object ((critter genetical) stream)
   (print-unreadable-object (critter stream :type T :identity T)
@@ -22,15 +25,18 @@
 
 (defmethod set-gene ((critter genetical) genome value)
   (declare (type keyword genome))
-  (declare (type (or keyword number) value))
+  (declare (type (or keyword number null) value))
   (let ((value
-          (cond
-            ((eql value :random) (gene-random genome))
-            ((keywordp value)
-             (if (eql genome :speed)
-                 (gene-random-speed value)
-                 (error "Invalid gene value for ~a: ~a" genome value)))
-            (T value))))
+          (if value
+              (cond
+                ((eql value :random)
+                 (gene-random genome :include-initial (eql genome :body)))
+                ((keywordp value)
+                 (if (eql genome :speed)
+                     (gene-random-speed value)
+                     (error "Invalid gene value for ~a: ~a" genome value)))
+                (T value))
+              (gene-initial genome))))
     (setf (gethash genome (genes critter)) value)))
 
 (defmethod gene-list ((critter genetical))
