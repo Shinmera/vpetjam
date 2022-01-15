@@ -18,9 +18,12 @@
     (:face (loop for i from 0 below 8 collect i))
     (:hat (loop for i from 0 below 5 collect i))))
 
-(defun gene-random (genome)
+(defun gene-random (genome &key include-initial)
   (declare (type keyword genome))
-  (alexandria:random-elt (remove (gene-initial genome) (gene-potential genome))))
+  (let ((potential (if include-initial
+                       (gene-potential genome)
+                       (remove (gene-initial genome) (gene-potential genome)))))
+    (alexandria:random-elt potential)))
 
 (defun gene-random-speed (speed)
   (declare (type keyword speed))
@@ -32,11 +35,11 @@
 (defun cross-gene (genome gene-a gene-b)
   (declare (type keyword genome))
   (declare (type (or null number) gene-a gene-b))
-  (when (or (null gene-a) (null gene-b))
-    (return-from cross-gene (or gene-a gene-b)))
-  (case genome
-    (:hue (angle-midpoint gene-a gene-b))
-    (:speed
-     (let ((medium (gene-initial :speed)))
-       (clamp 0.0 (+ medium (* 0.8 (+ (- gene-a medium) (- gene-b medium)))) 20.0)))
-    (T (if (< (random 1.0) 0.5) gene-a gene-b))))
+  (let ((gene-a (or gene-a (gene-initial :genome)))
+        (gene-b (or gene-b (gene-initial :genome))))
+    (case genome
+      (:hue (angle-midpoint gene-a gene-b))
+      (:speed
+       (let ((medium (gene-initial :speed)))
+         (clamp 0.0 (+ medium (* 0.8 (+ (- gene-a medium) (- gene-b medium)))) 20.0)))
+      (T (if (< (random 1.0) 0.5) gene-a gene-b)))))

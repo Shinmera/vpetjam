@@ -6,10 +6,10 @@
 (defmethod shared-initialize :after ((critter genetical) slots &key genes)
   (loop for genome in *genomes*
         do (set-gene critter genome (gene-initial genome)))
-  (if genes
-      (loop for genome in genes by #'cddr
-            for value in (rest genes) by #'cddr
-            do (set-gene critter genome value))))
+  (when genes
+    (loop for genome in genes by #'cddr
+          for value in (rest genes) by #'cddr
+          do (set-gene critter genome value))))
 
 (defmethod print-object ((critter genetical) stream)
   (print-unreadable-object (critter stream :type T :identity T)
