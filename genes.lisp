@@ -37,6 +37,6 @@
   (case genome
     (:hue (angle-midpoint gene-a gene-b))
     (:speed
-     (let ((medium 3.0)) ;; FIXME: Should this be in a global parameter?
+     (let ((medium (gene-initial :speed)))
        (clamp 0.0 (+ medium (* 0.8 (+ (- gene-a medium) (- gene-b medium)))) 20.0)))
     (T (if (< (random 1.0) 0.5) gene-a gene-b))))
