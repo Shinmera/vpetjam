@@ -62,5 +62,5 @@
       (:hue ;; Hue is the distance from the default value, so a maximum of pi.
        (1+ (abs (- (abs (- pi initial)) (abs (- pi value))))))
       (:face (if (/= initial value) 1.5 1.0)) ;; Any non-standard gives 1.5.
-      (:hat (if (/= initial value) 2.5 1.0)) ;; Any non-standard gives 2.5.
+      (:hat (if (/= initial value) 3.5 1.0)) ;; Any non-standard gives 3.5.
       (T 1.0)))) ;; Nothing special about vegetable types.
