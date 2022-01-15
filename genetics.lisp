@@ -42,3 +42,10 @@
   (loop for genome in *genomes*
         collect genome
         collect (cross-gene genome (gene critter genome) (gene critter genome))))
+
+(defmethod price-multiplier ((critter genetical))
+  (loop with multiplier = 1.0
+        for genome in *genomes*
+        for gene-multiplier = (gene-price-multiplier genome (gene critter genome))
+        do (setf multiplier (* multiplier gene-multiplier))
+        finally (return multiplier)))

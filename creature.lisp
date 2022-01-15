@@ -39,3 +39,6 @@
   (setf (angle (part :hat creature))
         (float-sign (vx (velocity creature))
                     (* 0.5 (/ (vlength (velocity creature)) 10.0)))))
+
+(defmethod sale-value ((creature creature))
+  (* 10 (floor (/ (* (call-next-method) (price-multiplier creature)) 10.0))))

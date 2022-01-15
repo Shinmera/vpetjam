@@ -43,3 +43,24 @@
        (let ((medium (gene-initial :speed)))
          (clamp 0.0 (+ medium (* 0.8 (+ (- gene-a medium) (- gene-b medium)))) 20.0)))
       (T (if (< (random 1.0) 0.5) gene-a gene-b)))))
+
+(defun gene-price-multiplier (genome value)
+  (declare (type keyword genome))
+  (declare (type (or null number) value))
+  (let* ((initial (gene-initial genome))
+         (value (or value initial)))
+    (case genome ;; Initial values give 1.0 multiplier.
+      (:speed
+       (cond ;; These just make nice graphs.
+         ;; Assuming the initial value is 3.0, then
+         ;; 0.0 gives ~2.95 multiplier and 20.0 gives ~3.89 multiplier.
+         ((< initial value) (1+ (log (- value (1- initial)))))
+         ((< value initial)
+          (let ((adjustment (+ initial 0.5)))
+            (1+ (log (/ (/ (+ value 0.5) adjustment))))))
+         (T 1.0)))
+      (:hue ;; Hue is the distance from the default value, so a maximum of pi.
+       (1+ (abs (- (abs (- pi initial)) (abs (- pi value))))))
+      (:face (if (/= initial value) 1.5 1.0)) ;; Any non-standard gives 1.5.
+      (:hat (if (/= initial value) 2.5 1.0)) ;; Any non-standard gives 2.5.
+      (T 1.0)))) ;; Nothing special about vegetable types.
