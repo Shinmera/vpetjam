@@ -39,8 +39,4 @@
     (:speed
      (let ((medium 3.0)) ;; FIXME: Should this be in a global parameter?
        (clamp 0.0 (+ medium (* 0.8 (+ (- gene-a medium) (- gene-b medium)))) 20.0)))
-    (:hat
-     (if (< (random 1.0) 0.2) ;; FIXME: Same as above. Also is this a good value?
-         (alexandria:random-elt (remove 0 (gene-potential :hat)))
-         (if (< (random 1.0) 0.5) gene-a gene-b)))
     (T (if (< (random 1.0) 0.5) gene-a gene-b))))
