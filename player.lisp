@@ -206,6 +206,7 @@
 (defmethod pick-up ((object object) (player player))
   (setf (location object) (vec 0 -50 +1))
   (setf (angle object) 0)
+  (setf (height object) 0)
   (push object (stack player))
   (start-clip 'player-pickup-side (action-playhead player))
   (reset (action-playhead player))
