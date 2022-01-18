@@ -189,6 +189,9 @@ void main(){
 (defmethod part (name (entity part-parent))
   (gethash name (children entity)))
 
+(defmethod part ((name cons) (entity part-parent))
+  (part (second name) (part (first name) entity)))
+
 (defmethod (setf part) ((part part) name (entity part-parent))
   (setf (gethash name (children entity)) part)
   (setf (render-list entity) (sort (alexandria:hash-table-values (children entity)) #'>
