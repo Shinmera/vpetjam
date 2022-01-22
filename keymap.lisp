@@ -8,15 +8,6 @@
 (trigger screenshot
          (key :one-of (:print-screen)))
 
-(trigger skip
-         (key :one-of (:enter :space))
-         (button :one-of (:b)))
-
-(trigger advance
-         (key :one-of (:enter :space))
-         (mouse :one-of (:left))
-         (button :one-of (:a :b)))
-
 (trigger previous
          (key :one-of (:left :up :w :a))
          (button :one-of (:dpad-l :dpad-u))
@@ -31,15 +22,16 @@
 
 (trigger accept
          (key :one-of (:e :enter))
-         (button :one-of (:a)))
+         (button :one-of (:a))
+         (mouse :one-of (:left)))
 
 (trigger back
          (key :one-of (:esc :escape))
          (button :one-of (:b)))
 
 (trigger interact
-         (key :one-of (:e :enter))
-         (button :one-of (:b)))
+         (key :one-of (:e :enter :space))
+         (button :one-of (:a :b :x :y)))
 
 (trigger left
          (key :one-of (:a :left))

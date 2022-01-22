@@ -75,7 +75,7 @@
                                           (slow-seed 150 :genes (:body :random :speed :slow))
                                           (fast-seed 200 :genes (:body :random :speed :fast))
                                           (hat-seed 250 :genes (:body :random :hat :random)))
-          for button = (make-instance 'buy-button :value name :player player :initargs initargs :cost cost)
+          for button = (make-instance 'buy-button :value (language-string name) :player player :initargs initargs :cost cost)
           do (alloy:enter button list)
              (alloy:enter button focus)
              (alloy:on alloy:activate (button)

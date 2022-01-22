@@ -27,7 +27,9 @@
                (:module "ui"
                 :components ((:file "general")
                              (:file "hud")
-                             (:file "shop"))))
+                             (:file "shop")
+                             (:file "credits")
+                             (:file "menu"))))
   :serial T
   :defsystem-depends-on (:deploy)
   :depends-on (:trial-glfw
@@ -37,4 +39,5 @@
                :alloy-constraint
                :alexandria
                :cl-mixed-wav
-               :cl-mixed-vorbis))
+               :cl-mixed-vorbis
+               :cl-markless))

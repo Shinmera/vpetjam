@@ -1,1 +1,12 @@
 go-backwards-in-ui "Back"
+new-game "New Game"
+credits-menu "View Credits"
+wishlist-cta "Check out Kandria on Steam!"
+exit-game "Quit Game"
+basic-seed "Basic Seed"
+personal-seed "Hypo Sensoron 2"
+hued-seed "Rainbow+ Infusion"
+slow-seed "Kalmson Type-B"
+fast-seed "Greeneron"
+hat-seed "Accessory Genome"
+motherlode

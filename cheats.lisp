@@ -29,6 +29,12 @@
         do (let ((new (if (string= key code :start2 i :end2 (+ i (length key))) (1+ i) 0)))
              (cond ((<= (length code) new)
                     (setf (cheat-idx cheat) 0)
-                    (v:info :kandria.cheats "Activating cheat code ~s" (cheat-name cheat)))
+                    (v:info :kandria.cheats "Activating cheat code ~s" (cheat-name cheat))
+                    (funcall (cheat-effect cheat)))
                    (T
                     (setf (cheat-idx cheat) new))))))
+
+(define-cheat motherlode
+  (let ((player (unit 'player T)))
+    (when player
+      (incf (money player) 9000))))

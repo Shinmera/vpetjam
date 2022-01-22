@@ -97,6 +97,7 @@
               (setf (holding combine) NIL)))))))
 
 (defmethod apply-transforms progn ((combine combine))
+  (translate-by 0 0.18 0)
   (when (and (< 0.5 (bulge-time combine)) (< 0 (work-time combine)))
     (translate-by (random* 0 0.1) (random* 0 0.1) 0)))
 

@@ -15,7 +15,7 @@
    (offset :initform (vec 0 0) :accessor offset)
    (region :initform NIL :accessor region))
   (:default-initargs
-   :location (vec 0 0)
+   :location (vec 0 0 0)
    :target-size (v* (vec 1280 720) 0.5)))
 
 (defmethod reset ((camera camera))

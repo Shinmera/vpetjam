@@ -20,7 +20,7 @@
    :valign :bottom))
 
 (presentations:define-update (ui money-display)
-  (label
+  (labelo
    :text alloy:text))
 
 (defclass hud (panel)

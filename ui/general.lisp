@@ -31,6 +31,8 @@
 (defmethod render :after ((pass ui-pass) target)
   (gl:disable :depth-test))
 
+(trace alloy:handle)
+
 (defmethod handle :around ((ev event) (pass ui-pass))
   (unless (call-next-method)
     (dolist (panel (panels pass))
@@ -244,3 +246,20 @@
 (presentations:define-animated-shapes button
   (:background (simple:pattern :duration 0.2))
   (border (simple:pattern :duration 0.3)))
+
+(defclass label (alloy:label*)
+  ())
+
+(presentations:define-realization (ui label)
+  ((:label simple:text)
+   (alloy:margins 0)
+   alloy:text
+   :font (setting :display :font)
+   :wrap T
+   :size (alloy:un 20)
+   :halign :start
+   :valign :middle))
+
+(presentations:define-update (ui label)
+  (:label
+   :pattern colors:white))

@@ -7,8 +7,7 @@
    (loader :initform (make-instance 'loader))
    (game-speed :initform 1.0 :accessor game-speed))
   (:default-initargs
-   :clear-color (vec 2/17 2/17 2/17 0)
-   :context '(:version (3 3) :profile :core)))
+   :clear-color (vec 2/17 2/17 2/17 0)))
 
 (defmethod initialize-instance ((main main) &key audio-backend)
   (setf +main+ main)
@@ -69,13 +68,13 @@
                            :height (second (setting :display :resolution))
                            :vsync (setting :display :vsync)
                            :fullscreen (setting :display :fullscreen)
-                           :title +app-system+
+                           :title "Vegetable★Mash"
                            :version '(3 3)
                            :profile :core))
            (append (setting :debugging :initargs) initargs))))
 
 (defmethod setup-scene ((main main) (scene scene))
-  (call-next-method)
+  (enter (make-instance 'camera) scene)
   (let ((render (make-instance 'render-pass))
         (ui (make-instance 'ui-pass :base-scale (setting :display :ui-scale)))
         (blend (make-instance 'blend-pass)))
@@ -85,7 +84,7 @@
 
 (defmethod setup-rendering :after ((main main))
   (disable :cull-face :scissor-test :depth-test)
-  (show-panel 'hud))
+  (show-panel 'main-menu))
 
 (defun apply-video-settings (&optional (settings (setting :display)))
   (when *context*
