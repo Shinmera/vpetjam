@@ -37,4 +37,5 @@
 (define-cheat motherlode
   (let ((player (unit 'player T)))
     (when player
+      (harmony:play (// 'vpetjam 'buy) :reset T)
       (incf (money player) 9000))))
