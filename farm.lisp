@@ -33,6 +33,7 @@
        (null (holding spot))))
 
 (defmethod receive ((seed seed) (spot spot))
+  (harmony:play (// 'sound 'plant) :reset T)
   (maybe-leave seed)
   (let ((crop (make-instance 'crop :parent spot :location (vcopy (location spot))
                                    :genes (gene-list seed))))
@@ -49,6 +50,7 @@
 (defmethod object-accepted-p ((object object) (sell sell)) T)
 
 (defmethod receive ((object object) (sell sell))
+  (harmony:play (// 'sound 'sell))
   (incf (money (unit 'player +world+)) (sale-value object)))
 
 (define-shader-entity buy (basic-entity collider interactable)
@@ -56,6 +58,7 @@
    (bsize :initform (vec 64 64))))
 
 (defmethod interact ((buy buy) (player player))
+  (harmony:play (// 'sound 'shop))
   (show-panel 'shop :player player))
 
 (define-shader-entity combine (basic-receptacle)
@@ -71,9 +74,11 @@
 (defmethod receive ((thing genetical) (combine combine))
   (ecase (state combine)
     (:empty
+     (harmony:play (// 'sound 'sell))
      (setf (holding combine) thing)
      (setf (state combine) :holding))
     (:holding
+     (harmony:play (// 'sound 'combiner))
      (let* ((left (shiftf (holding combine) NIL))
             (right thing)
             (genes (if (and left right) ;; FIXME: How did I get a NIL to one of these?
@@ -89,10 +94,10 @@
   (case (state combine)
     (:working
      (let ((tt (incf (work-time combine) (dt ev))))
-       (cond ((<= 1.2 tt)
+       (cond ((<= 2.0 tt)
               (setf (work-time combine) 0.0)
               (setf (state combine) :empty))
-             ((and (<= 1.0 tt) (holding combine))
+             ((and (<= 1.8 tt) (holding combine))
               (enter-and-load (holding combine) (container combine) +main+)
               (setf (holding combine) NIL)))))))
 
@@ -110,6 +115,7 @@
   (setf (playback-speed crop) (/ (gene crop :growth))))
 
 (defmethod switch-animation :after ((crop crop) next)
+  (harmony:play (// 'sound 'spawn) :reset T)
   (enter-and-load (make-instance 'creature :location (location crop)
                                            :genes (gene-list crop))
                   +world+ +main+)

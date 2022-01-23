@@ -35,6 +35,8 @@
                                  (:larm  :uv (0 3) :pivot (0  19) :children ((:hand :uv (0 2) :location (0 -23 +1))))
                                  (:rarm  :uv (0 3) :pivot (0  19) :children ((:hand :uv (0 2) :location (0 -23 +1)))))))
 
+(alloy:make-observable '(setf money) '(value alloy:observable))
+
 (defmethod initialize-instance :after ((player player) &key)
   (start-loop 'player-stand-forward player))
 
@@ -85,7 +87,7 @@
        ((:head location) (vec  +3  50 -1))))
 
 (define-clip player-walk-forward
-  0.0 (((:head location) (vec   0  50 -1)) ((:head angle) 0.0) ((:head skew) (vec +1 +1))
+  0.0 (((:head location) (vec   0  50 -1)) ((:head angle) 0.0) ((:he.ad skew) (vec +1 +1))
        ((:lleg location) (vec -10 -58 +1)) ((:lleg angle) +0.07) ((:lleg skew) (vec +1 +0.5))
        ((:rleg location) (vec +10 -58 +1)) ((:rleg angle) 0.0) ((:rleg skew) (vec -1 +1))
        ((:larm location) (vec -20   0 -1)) ((:larm angle) +0.1) ((:larm skew) (vec +1 +1))
@@ -227,6 +229,7 @@
 (defmethod pick-up (thing (player player)))
 
 (defmethod pick-up ((object object) (player player))
+  (harmony:play (// 'sound 'pick) :reset T)
   (setf (location object) (vec 0 -50 +1))
   (setf (angle object) 0)
   (setf (height object) 0)
@@ -236,14 +239,17 @@
   (leave* object T))
 
 (defmethod handle ((ev drop) (player player))
-  (if (<= (vlength (velocity player)) 0.2)
-      (loop for entity in (stack player)
-            do (setf (location entity) (location (cursor player))))
-      (loop for entity in (stack player)
-            do (setf (location entity) (location player))
-               (setf (height entity) 120)
-               (setf (hvel entity) 2.0)
-               (setf (velocity entity) (v* (direction player) 10.0))))
+  (cond ((<= (vlength (velocity player)) 0.2)
+         (harmony:play (// 'sound 'plant) :reset T)
+         (loop for entity in (stack player)
+               do (setf (location entity) (location (cursor player)))))
+        (T
+         (harmony:play (// 'sound 'throw) :reset T)
+         (loop for entity in (stack player)
+               do (setf (location entity) (location player))
+                  (setf (height entity) 120)
+                  (setf (hvel entity) 2.0)
+                  (setf (velocity entity) (v* (direction player) 10.0)))))
   (loop for entity = (pop (stack player))
         while entity
         do (setf (direction entity) (vcopy (direction player)))

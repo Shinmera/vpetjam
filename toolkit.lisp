@@ -46,7 +46,7 @@
 (defun random* (x var)
   (if (= 0.0 var)
       x
-      (+ x (- (random var) (/ var 2f0)))))
+      (+ x (- (random (float var 0f0)) (/ var 2f0)))))
 
 (defun mouse-world-pos (pos)
   (let ((camera (unit :camera T)))

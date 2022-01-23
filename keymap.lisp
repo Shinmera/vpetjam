@@ -22,8 +22,7 @@
 
 (trigger accept
          (key :one-of (:e :enter))
-         (button :one-of (:a))
-         (mouse :one-of (:left)))
+         (button :one-of (:a)))
 
 (trigger back
          (key :one-of (:esc :escape))

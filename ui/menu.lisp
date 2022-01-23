@@ -35,6 +35,7 @@
   ())
 
 (defmethod initialize-instance :after ((panel main-menu) &key)
+  (harmony:play (// 'music 'main))
   (let ((layout (make-instance 'org.shirakumo.alloy.layouts.constraint:layout))
         (menu (make-instance 'alloy:vertical-linear-layout :cell-margins (alloy:margins 5) :min-size (alloy:size 100 30)))
         (focus (make-instance 'alloy:focus-list)))

@@ -31,8 +31,6 @@
 (defmethod render :after ((pass ui-pass) target)
   (gl:disable :depth-test))
 
-(trace alloy:handle)
-
 (defmethod handle :around ((ev event) (pass ui-pass))
   (unless (call-next-method)
     (dolist (panel (panels pass))
@@ -82,15 +80,9 @@
   (call-next-method)
   (dolist (panel (panels pass))
     (stage panel area))
-  #++
-  (dolist (sound '(ui-focus-in ui-focus-out ui-location-enter
-                   ui-advance-dialogue ui-no-more-to-focus
-                   ui-quest-start ui-close-menu ui-dialogue-choice
-                   ui-focus-next ui-open-menu ui-quest-complete
-                   ui-quest-fail dialogue-scroll ui-scroll
-                   ui-start-game ui-start-dialogue ui-use-item
-                   ui-error))
+  (dolist (sound '(buy combiner pick plant sell shop spawn error throw))
     (stage (// 'sound sound) area))
+  (stage (// 'music 'main) area)
   (stage (simple:request-font pass (setting :display :font)) area)
   (stage (simple:request-font pass "PromptFont") area)
   (stage (simple:request-font pass "Brands") area)

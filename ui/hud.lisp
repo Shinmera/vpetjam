@@ -20,7 +20,7 @@
    :valign :bottom))
 
 (presentations:define-update (ui money-display)
-  (labelo
+  (label
    :text alloy:text))
 
 (defclass hud (panel)
@@ -28,6 +28,6 @@
 
 (defmethod initialize-instance :after ((hud hud) &key (player (unit 'player T)))
   (let* ((layout (make-instance 'org.shirakumo.alloy.layouts.constraint:layout)))
-    (alloy:enter (alloy:represent (slot-value player 'money) 'money-display)
+    (alloy:enter (alloy:represent (money player) 'money-display)
                  layout :constraints `((:left 30) (:bottom 30) (:size 1000 50)))
     (alloy:finish-structure hud layout NIL)))

@@ -14,11 +14,6 @@
   (unless (gene critter :growth)
     (set-gene critter :growth (gene-growth (gene critter :body)))))
 
-(defmethod print-object ((critter genetical) stream)
-  (print-unreadable-object (critter stream :type T :identity T)
-    (loop for gene in (gene-list critter)
-          do (format stream " ~a (~a)" (genome gene) (value gene)))))
-
 (defmethod gene ((critter genetical) genome)
   (declare (type keyword genome))
   (gethash genome (genes critter)))
