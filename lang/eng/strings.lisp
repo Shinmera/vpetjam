@@ -9,4 +9,12 @@ hued-seed "Rainbow+ Infusion"
 slow-seed "Kalmson Type-B"
 fast-seed "Greeneron"
 hat-seed "Accessory Genome"
-motherlode
+settings-menu "Settings"
+master-volume "Master Volume"
+effect-volume "Effects Volume"
+music-volume "Music Volume"
+screen-resolution "Resolution"
+should-application-fullscreen "Fullscreen"
+activate-vsync "VSync"
+user-interface-scale-factor "UI Scale"
+

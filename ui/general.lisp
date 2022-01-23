@@ -255,3 +255,51 @@
 (presentations:define-update (ui label)
   (:label
    :pattern colors:white))
+
+(presentations:define-realization (ui alloy:checkbox)
+  ((:border simple:rectangle)
+   (alloy:extent 0 0 (alloy:ph 1) (alloy:ph 1))
+   :pattern colors:white
+   :line-width (alloy:un 2))
+  ((:check simple:rectangle)
+   (alloy:extent (alloy:ph 0.15) (alloy:ph 0.15) (alloy:ph 0.7) (alloy:ph 0.7))
+   :hidden-p (not (alloy:active-p alloy:renderable))
+   :pattern colors:orange))
+
+(presentations:define-update (ui alloy:checkbox)
+  (:border
+   :hidden-p NIL
+   :pattern (if alloy:focus
+                (colored:color 0.9 0.9 0.9)
+                colors:gray))
+  (:check
+   :pattern (if alloy:focus (colored:color 0.9 0.9 0.9) colors:orange)
+   :hidden-p (not (alloy:active-p alloy:renderable))))
+
+(presentations:define-realization (ui alloy:slider)
+  ((:background simple:rectangle)
+   (ecase (alloy:orientation alloy:renderable)
+     (:horizontal (alloy:extent 0 (alloy:ph 0.4) (alloy:pw) (alloy:ph 0.2)))
+     (:vertical (alloy:extent (alloy:pw 0.4) 0 (alloy:pw 0.2) (alloy:ph)))))
+  ((:border simple:rectangle)
+   (alloy:margins -3)
+   :line-width (alloy:un 1))
+  ((:handle simple:rectangle)
+   (ecase (alloy:orientation alloy:renderable)
+     (:horizontal (alloy:extent -5 0 10 (alloy:ph)))
+     (:vertical (alloy:extent 0 -5 (alloy:pw) 10))))
+  ((:display simple:text)
+   (alloy:margins)
+   (format NIL "~,2f" alloy:value)
+   :pattern colors:white
+   :font (setting :display :font)
+   :halign :middle
+   :valign :middle))
+
+(presentations:define-update (ui alloy:slider)
+  (:handle
+   :pattern (case alloy:focus
+              (:strong colors:white)
+              (T colors:orange)))
+  (:display
+   :text (format NIL "~,2f" alloy:value)))
