@@ -29,7 +29,8 @@
                              (:file "hud")
                              (:file "shop")
                              (:file "credits")
-                             (:file "menu"))))
+                             (:file "menu")
+                             (:file "intro"))))
   :serial T
   :defsystem-depends-on (:deploy)
   :depends-on (:trial-glfw
