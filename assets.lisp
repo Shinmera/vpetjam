@@ -13,7 +13,7 @@
      :voice-class 'harmony:music-segment))
 
 (define-track main #p"main.ogg"
-  :volume 0.1)
+  :volume 0.5)
 
 (define-assets-from-path (vpetjam sprite-data "sprite/*.lisp" :ignore-directory T))
 
@@ -21,6 +21,7 @@
   (T :min-filter :linear-mipmap-linear :mag-filter :linear))
 
 (define-assets-from-path (sound trial-harmony:sound "**/*.wav")
-  (spawn :volume 0.3)
-  (pick :volume 0.2)
-  (T :volume 0.4))
+  (spawn :volume 0.8)
+  (pick :volume 0.5)
+  (error :volume 1.2)
+  (T :volume 0.9))
