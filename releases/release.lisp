@@ -10,6 +10,6 @@
                  "pool/music/*.wav"
                  "pool/**/*.*~")
          :copy ("CREDITS.mess" "README.mess"))
- :itch (:user "Shinmera")
+ :itch (:user "Shinmera" :project "vegetablemash")
  :system "vpetjam"
- :upload (:targets ()))
+ :upload (:targets (:itch)))
