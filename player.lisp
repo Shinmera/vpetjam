@@ -87,7 +87,7 @@
        ((:head location) (vec  +3  50 -1))))
 
 (define-clip player-walk-forward
-  0.0 (((:head location) (vec   0  50 -1)) ((:head angle) 0.0) ((:he.ad skew) (vec +1 +1))
+  0.0 (((:head location) (vec   0  50 -1)) ((:head angle) 0.0) ((:head skew) (vec +1 +1))
        ((:lleg location) (vec -10 -58 +1)) ((:lleg angle) +0.07) ((:lleg skew) (vec +1 +0.5))
        ((:rleg location) (vec +10 -58 +1)) ((:rleg angle) 0.0) ((:rleg skew) (vec -1 +1))
        ((:larm location) (vec -20   0 -1)) ((:larm angle) +0.1) ((:larm skew) (vec +1 +1))
