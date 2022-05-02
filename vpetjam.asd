@@ -37,6 +37,7 @@
                :trial-alloy
                :trial-harmony
                :trial-notify
+               :trial-png
                :alloy-constraint
                :alexandria
                :cl-mixed-wav

@@ -20,7 +20,7 @@
   (enter (make-instance 'buy  :location (vec 0 (+ 0 256 128 64) (+ 0 256 128 64))) world)
   (enter (make-instance 'combine :location (vec 0 (- 0 256 64) (- 0 256 64))) world)
   (dotimes (i 10)
-    (enter (make-instance 'seed :location (vxy_ (polar->cartesian (vec 100.0 (/ (* i 2 PI) 10))))
+    (enter (make-instance 'seed :location (vxy_ (vcartesian (vec 100.0 (/ (* i 2 PI) 10))))
                                 :genes '(:body :random))
            world))
   (enter (make-instance 'player) world)
