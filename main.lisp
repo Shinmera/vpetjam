@@ -29,7 +29,7 @@
 (defmethod update ((main main) tt dt fc)
   (let* ((scene (scene main))
          (dt (* (game-speed main) (float dt 1.0)))
-         (ev (load-time-value (make-instance 'tick))))
+         (ev (load-time-value (make-instance 'tick :tt 0.0d0 :dt 0.0 :fc 0))))
     (setf (slot-value ev 'tt) tt)
     (setf (slot-value ev 'dt) dt)
     (setf (slot-value ev 'fc) fc)

@@ -42,4 +42,5 @@
                :alexandria
                :cl-mixed-wav
                :cl-mixed-vorbis
-               :cl-markless))
+               :cl-markless
+               :flare))

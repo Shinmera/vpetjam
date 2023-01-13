@@ -30,11 +30,9 @@
   (:icon
    :sizing :contain))
 
-(defmethod alloy:suggest-bounds ((bounds alloy:extent) (icon icon))
-  (alloy:extent (alloy:x bounds)
-                (alloy:y bounds)
-                (alloy:w bounds)
-                (alloy:un 200)))
+(defmethod alloy:suggest-size ((bounds alloy:size) (icon icon))
+  (alloy:size (alloy:w bounds)
+              (alloy:un 200)))
 
 (defclass credits-layout (alloy:fullscreen-layout alloy:focus-element alloy:renderable)
   ())
@@ -67,7 +65,7 @@
 
 (defmethod handle ((ev tick) (panel credits))
   (let* ((extent (alloy:bounds (credits panel)))
-         (ideal (or (ideal panel) (setf (ideal panel) (alloy:pxh (alloy:suggest-bounds extent (credits panel)))))))
+         (ideal (or (ideal panel) (setf (ideal panel) (alloy:pxh (alloy:suggest-size extent (credits panel)))))))
     (alloy:with-unit-parent (alloy:layout-element panel)
       (setf (alloy:bounds (credits panel)) 
             (alloy:px-extent (alloy:pxx extent)
