@@ -16,6 +16,7 @@
    (#:trial-harmony #:org.shirakumo.fraf.trial.harmony)
    (#:mixed #:org.shirakumo.fraf.mixed)
    (#:notify #:org.shirakumo.fraf.trial.notify)
-   (#:bvh #:org.shirakumo.fraf.trial.bvh2))
+   (#:bvh #:org.shirakumo.fraf.trial.bvh2)
+   (#:v #:org.shirakumo.verbose))
   (:export
    #:launch))
